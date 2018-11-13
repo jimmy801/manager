@@ -38,6 +38,12 @@ namespace WindowsFormsApplication1
         public AV管家()
         {
             InitializeComponent();
+            this.InputLanguageChanged += new InputLanguageChangedEventHandler(languageChange);
+        }
+
+        private void languageChange(Object sender, InputLanguageChangedEventArgs e)
+        {
+            searchText.ImeMode = System.Windows.Forms.ImeMode.OnHalf;  // 將控制項的ImeMode設為OnHalf
         }
 
         private string CommandOutput(string commandText)
