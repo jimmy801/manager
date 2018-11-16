@@ -18,6 +18,7 @@ namespace WindowsFormsApplication1
         int tc = 0;
         ListViewItemComparer sorter = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        string deskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK";
         bool over = false;
         bool getDataexc = false;
         bool lastIsFolder = true;
@@ -145,10 +146,10 @@ namespace WindowsFormsApplication1
             sw = Stopwatch.StartNew();
             string[] filter = { ".", "..", "白馬下載器", "新增資料夾", "Sp Service" };
             //string[] tmp = File.ReadAllLines(desktop + @"\o");
-            string[] tmp = CommandOutput(@"
+            string[] tmp = CommandOutput(String.Format(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 if exist %p:\ (
-for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK""') do (
+for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""{0}""') do (
 if ""%i"" NEQ """" (
 cd /d %p:\
 if exist %p:\Data ( 
@@ -158,7 +159,7 @@ dir
 )
 )
 )
-)").Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+)", deskNames)).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             FcmdT = sw.ElapsedMilliseconds;
             string loc = "";
             foreach (var t in tmp)
@@ -220,10 +221,10 @@ dir
             Stopwatch sw = new Stopwatch();//Stopwatch類別在System.Diagnostics命名空間裡
             sw.Reset();
             sw = Stopwatch.StartNew();
-            string[] tmp = CommandOutput(@"
+            string[] tmp = CommandOutput(String.Format(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 if exist %p:\ ( 
-for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk""') do (
+for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""{0}""') do (
 if ""%i"" NEQ """" (
 %p:
 if exist %p:\Data ( 
@@ -237,7 +238,7 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
 )
 )
 )
-)").Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+)", deskNames)).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             VcmdT = sw.ElapsedMilliseconds;
             string[] tmpstr;
             string actress = "";
