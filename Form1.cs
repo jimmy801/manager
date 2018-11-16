@@ -148,7 +148,7 @@ namespace WindowsFormsApplication1
             string[] tmp = CommandOutput(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 if exist %p:\ (
-for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue""') do (
+for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK""') do (
 if ""%i"" NEQ """" (
 cd /d %p:\
 if exist %p:\Data ( 
