@@ -223,7 +223,7 @@ dir
             listView1.Items.AddRange(aryF.ToArray());
             label1.Visible = false;
             pictureBox1.Visible = false;
-            total.Text = String.Format("共 {0} 個項目", listView1.Items.Count);
+            total.Text = String.Format("共 {0} 個項目", listView1.Items.Count.ToString("#,0"));
             setDefaultColor();
             lastIsFolder = true;
             searchText.Enabled = searchBTN.Enabled = rldBTN.Enabled = rdmBTN.Enabled = true;
@@ -346,7 +346,7 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
             setBtnSize();
             listView1.Items.AddRange(aryV.ToArray());
             label1.Visible = pictureBox1.Visible = false;
-            total.Text = String.Format("共 {0} 個項目", listView1.Items.Count);
+            total.Text = String.Format("共 {0} 個項目", listView1.Items.Count.ToString("#,0"));
             setDefaultColor();
             lastIsFolder = false;
             searchText.Enabled = searchBTN.Enabled = rldBTN.Enabled = rdmBTN.Enabled = true;
@@ -436,7 +436,7 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
         {
             if (tc++ == 50)
             {
-                total.Text = String.Format("共 {0} 個項目", listView1.Items.Count);
+                total.Text = String.Format("共 {0} 個項目", listView1.Items.Count.ToString("#,0"));
                 t.Stop();
                 tc = 0;
             }
@@ -444,7 +444,7 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
 
         private void setDetail(string msg)
         {
-            total.Text = String.Format("共 {0} 個項目", listView1.Items.Count);
+            total.Text = String.Format("共 {0} 個項目", listView1.Items.Count.ToString("#,0"));
             t.Start();
             total.Text += ", " + msg;
         }
@@ -534,6 +534,7 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
             if (string.IsNullOrWhiteSpace(searchText.Text)) return;
             int startI = listView1.SelectedItems.Count > 0 ? listView1.SelectedItems[0].Index + interval < listView1.Items.Count ? listView1.SelectedItems[0].Index + interval >= 0 ? listView1.SelectedItems[0].Index + interval : listView1.Items.Count - 1 : 0 : 0;
             int endI = interval > 0 ? listView1.Items.Count : 0;
+            int init_pos = startI;
             bool found = false;
             for (int i = startI; interval > 0 ? i < endI : i >= endI; i += interval)
             {
