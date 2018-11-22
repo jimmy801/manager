@@ -39,12 +39,27 @@ namespace WindowsFormsApplication1
         public AV管家()
         {
             InitializeComponent();
-            this.InputLanguageChanged += new InputLanguageChangedEventHandler(languageChange);
         }
 
-        private void languageChange(Object sender, InputLanguageChangedEventArgs e)
+        ///<summary>
+        ///字串轉半形
+        ///</summary>
+        ///<paramname="input">任一字元串</param>
+        ///<returns>半形字元串</returns>
+        private static string ToNarrow(string input)
         {
-            searchText.ImeMode = System.Windows.Forms.ImeMode.OnHalf;  // 將控制項的ImeMode設為OnHalf
+            char[] c = input.ToCharArray();
+            for (int i = 0; i < c.Length; i++)
+            {
+                if (c[i] == 12288)
+                {
+                    c[i] = (char)32;
+                    continue;
+                }
+                if (c[i] > 65280 && c[i] < 65375)
+                    c[i] = (char)(c[i] - 65248);
+            }
+            return new string(c);
         }
 
         private string CommandOutput(string commandText)
@@ -514,16 +529,16 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
                 listView1.SelectedItems[i].Selected = false;
         }
 
-        private void search()
+        private void search(int interval)
         {
             if (string.IsNullOrWhiteSpace(searchText.Text)) return;
-            int startI = listView1.SelectedItems.Count > 0 ? listView1.SelectedItems[0].Index + 1 < listView1.Items.Count ? listView1.SelectedItems[0].Index + 1 : 0 : 0;
-            int endI = listView1.Items.Count;
+            int startI = listView1.SelectedItems.Count > 0 ? listView1.SelectedItems[0].Index + interval < listView1.Items.Count ? listView1.SelectedItems[0].Index + interval >= 0 ? listView1.SelectedItems[0].Index + interval : listView1.Items.Count - 1 : 0 : 0;
+            int endI = interval > 0 ? listView1.Items.Count : 0;
             bool found = false;
-            for (int i = startI; i < endI; ++i)
+            for (int i = startI; interval > 0 ? i < endI : i >= endI; i += interval)
             {
                 for (int j = 0; j < listView1.Items[i].SubItems.Count; ++j)
-                    if (listView1.Items[i].SubItems[j].Text.IndexOf(searchText.Text, StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (listView1.Items[i].SubItems[j].Text.IndexOf(ToNarrow(searchText.Text), StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         cancelSelected();
                         listView1.Items[i].Selected = true;
@@ -532,13 +547,18 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
                         break;
                     }
                 if (found) break;
-                else if (i == listView1.Items.Count - 1 && startI != 0)
+                else if (interval > 0 && i == listView1.Items.Count - 1 && startI != 0)
                 {
                     i = -1;
                     endI = startI;
                 }
+                else if (interval < 0 && i == 0 && startI != listView1.Items.Count - 1)
+                {
+                    i = listView1.Items.Count;
+                    endI = startI;
+                }
             }
-            if (!found) setDetail(string.Format("找不到\"{0}\"", searchText.Text));
+            if (!found) setDetail(string.Format("找不到\"{0}\"", ToNarrow(searchText.Text)));
         }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
@@ -552,7 +572,11 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
                         listView1.SelectedItems[0].Focused = true;
                     e.SuppressKeyPress = true;
                     break;
-                case Keys.Enter: search(); e.SuppressKeyPress = true; break;
+                case Keys.Enter:
+                    if (Form.ModifierKeys == Keys.Alt) openFile();
+                    else if (Control.ModifierKeys == Keys.Shift) search(-1);
+                    else search(1);
+                    e.SuppressKeyPress = true; break;
             }
         }
 
@@ -608,7 +632,8 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
 
         private void searchBTN_Click(object sender, EventArgs e)
         {
-            search();
+            if (Control.ModifierKeys == Keys.Shift) search(-1);
+            else search(1);
             if (string.IsNullOrWhiteSpace(searchText.Text) && VideoR.Checked)
                 findRepeat();
         }
@@ -798,9 +823,9 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
                 return CompareResult;
             else
                 if (this.SortOrder == SortOrder.Descending)
-                    return (-CompareResult);
-                else
-                    return 0;
+                return (-CompareResult);
+            else
+                return 0;
         }
     }
 }
