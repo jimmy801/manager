@@ -38,7 +38,9 @@ namespace WindowsFormsApplication1
 
         public AV管家()
         {
+            this.Icon = Properties.Resources.favicon_20181126051103728;
             InitializeComponent();
+            this.ShowIcon = true;
         }
 
         ///<summary>
@@ -84,6 +86,7 @@ namespace WindowsFormsApplication1
                 strOutput = p.StandardOutput.ReadToEnd();//匯出整個執行過程
                 string lastStr = "More? )";
                 strOutput = strOutput.Substring(strOutput.LastIndexOf(lastStr) + lastStr.Length);
+                strOutput = strOutput.Substring(0, strOutput.LastIndexOf("exit"));
                 strOutput = new Regex(@"(\r\n)*.*Volume.+?\r\n|(\r\n)*.+File\(s\).+?\r\n|(\r\n)*.+Dir\(s\).+?\r\n").Replace(strOutput, "");
                 p.WaitForExit();
                 p.Close();
