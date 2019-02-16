@@ -18,7 +18,7 @@ namespace WindowsFormsApplication1
         int tc = 0;
         ListViewItemComparer sorter = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        string deskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK";
+        string deskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_BLK_8T";
         bool over = false;
         bool getDataexc = false;
         bool lastIsFolder = true;
@@ -581,6 +581,15 @@ dir /b /on /s *.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm
                     else if (Control.ModifierKeys == Keys.Shift) search(-1);
                     else search(1);
                     e.SuppressKeyPress = true; break;
+                default:
+                    switch (e.KeyCode)
+                    {
+                        case Keys.F1: copyFirstColumnToClip(); e.SuppressKeyPress = true; break;
+                        case Keys.F2: copySecondColumnToClip(); e.SuppressKeyPress = true; break;
+                        case Keys.Enter: openFile(); e.SuppressKeyPress = true; break;
+                        default: break;
+                    }
+                    break;
             }
         }
 
