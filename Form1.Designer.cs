@@ -45,6 +45,7 @@
             this.searchBTN = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.listView2 = new System.Windows.Forms.ListView();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -73,11 +74,11 @@
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
-            this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
-            this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView1_KeyDown);
-            this.listView1.Leave += new System.EventHandler(this.listView1_Leave);
+            this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+            this.listView1.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
+            this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
+            this.listView1.Leave += new System.EventHandler(this.listView_Leave);
             // 
             // contextMenuStrip1
             // 
@@ -112,6 +113,7 @@
             this.rldBTN.Text = "Reload";
             this.rldBTN.UseVisualStyleBackColor = true;
             this.rldBTN.Click += new System.EventHandler(this.rldBTN_Click);
+            this.rldBTN.KeyDown += new System.Windows.Forms.KeyEventHandler(this.openAndCopyKeyDown);
             // 
             // toolPanel
             // 
@@ -143,6 +145,7 @@
             this.rdmBTN.Text = "Random";
             this.rdmBTN.UseVisualStyleBackColor = true;
             this.rdmBTN.Click += new System.EventHandler(this.rdm_Click);
+            this.rdmBTN.KeyDown += new System.Windows.Forms.KeyEventHandler(this.openAndCopyKeyDown);
             // 
             // radioPanel
             // 
@@ -164,6 +167,7 @@
             this.VideoR.Text = "Video";
             this.VideoR.UseVisualStyleBackColor = true;
             this.VideoR.CheckedChanged += new System.EventHandler(this.Condition_CheckedChanged);
+            this.VideoR.KeyDown += new System.Windows.Forms.KeyEventHandler(this.openAndCopyKeyDown);
             // 
             // FolderR
             // 
@@ -177,6 +181,7 @@
             this.FolderR.Text = "Folder";
             this.FolderR.UseVisualStyleBackColor = true;
             this.FolderR.CheckedChanged += new System.EventHandler(this.Condition_CheckedChanged);
+            this.FolderR.KeyDown += new System.Windows.Forms.KeyEventHandler(this.openAndCopyKeyDown);
             // 
             // searchPanel
             // 
@@ -207,7 +212,7 @@
             this.searchBTN.Text = "search";
             this.searchBTN.UseVisualStyleBackColor = true;
             this.searchBTN.Click += new System.EventHandler(this.searchBTN_Click);
-            this.searchBTN.KeyDown += new System.Windows.Forms.KeyEventHandler(this.search_task);
+            this.searchBTN.KeyDown += new System.Windows.Forms.KeyEventHandler(this.openAndCopyKeyDown);
             // 
             // panel2
             // 
@@ -221,6 +226,7 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.listView2);
             this.panel3.Controls.Add(this.label1);
             this.panel3.Controls.Add(this.pictureBox1);
             this.panel3.Controls.Add(this.listView1);
@@ -229,6 +235,26 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(535, 451);
             this.panel3.TabIndex = 3;
+            // 
+            // listView2
+            // 
+            this.listView2.ContextMenuStrip = this.contextMenuStrip1;
+            this.listView2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView2.FullRowSelect = true;
+            this.listView2.GridLines = true;
+            this.listView2.ImeMode = System.Windows.Forms.ImeMode.Disable;
+            this.listView2.Location = new System.Drawing.Point(0, 0);
+            this.listView2.Name = "listView2";
+            this.listView2.Size = new System.Drawing.Size(535, 451);
+            this.listView2.TabIndex = 8;
+            this.listView2.TabStop = false;
+            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listView2.View = System.Windows.Forms.View.Details;
+            this.listView2.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
+            this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+            this.listView2.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
+            this.listView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
+            this.listView2.Leave += new System.EventHandler(this.listView_Leave);
             // 
             // label1
             // 
@@ -243,7 +269,7 @@
             // 
             this.pictureBox1.Image = global::WindowsFormsApplication1.Properties.Resources.giphy__1___1___2_;
             this.pictureBox1.Location = new System.Drawing.Point(220, 16);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(15, 15);
             this.pictureBox1.TabIndex = 7;
@@ -321,6 +347,7 @@
         private System.Windows.Forms.Button rdmBTN;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ListView listView2;
     }
 }
 

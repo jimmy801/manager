@@ -11,7 +11,6 @@ C:\Users\Jimmy801\Desktop\WindowsFormsApplication1\obj\Debug\WindowsFormsApplica
 D:\Tools\batch\manager\bin\Debug\WindowsFormsApplication1.exe.config
 D:\Tools\batch\manager\bin\Debug\WindowsFormsApplication1.exe
 D:\Tools\batch\manager\bin\Debug\WindowsFormsApplication1.pdb
-D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.csprojAssemblyReference.cache
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.AV管家.resources
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.Form2.resources
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
@@ -19,3 +18,4 @@ D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.csproj.GenerateResourc
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.csproj.CoreCompileInputs.cache
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.exe
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.pdb
+D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.csprojAssemblyReference.cache
