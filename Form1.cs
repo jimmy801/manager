@@ -16,7 +16,8 @@ namespace WindowsFormsApplication1
     {
         System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
         int tc = 0;
-        ListViewItemComparer sorter = new ListViewItemComparer();
+        ListViewItemComparer sorter1 = new ListViewItemComparer();
+        ListViewItemComparer sorter2 = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         string deskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_BLK_8T";
         bool over = false;
@@ -120,7 +121,6 @@ namespace WindowsFormsApplication1
             radioPanel.SetBounds(10, (toolPanel.Height - radioPanel.Height) / 2, radioPanel.Width, radioPanel.Height);
             int p5end = radioPanel.Location.X + radioPanel.Width;
             searchPanel.SetBounds((BtnPanel.Location.X - p5end - searchPanel.Width) / 2 + p5end, (toolPanel.Height - searchPanel.Height) / 2, searchPanel.Width, searchPanel.Height);
-            //this.Refresh();
         }
 
         private void setDefaultColor()
@@ -249,6 +249,7 @@ for /F %A in ('dir /ad/b') do @echo %~dpnxA
             label1.Visible = pictureBox1.Visible = false;
             searchText.Enabled = searchBTN.Enabled = rldBTN.Enabled = rdmBTN.Enabled = true;
             total.Text = String.Format("共 {0} 個項目", listView1.Items.Count.ToString("#,0"));
+            //Refresh();
             lastIsFolder = true;
         }
 
@@ -375,6 +376,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             label1.Visible = pictureBox1.Visible = false;
             searchText.Enabled = searchBTN.Enabled = rldBTN.Enabled = rdmBTN.Enabled = true;
             total.Text = String.Format("共 {0} 個項目", listView2.Items.Count.ToString("#,0"));
+            //Refresh();
             lastIsFolder = false;
         }
 
@@ -427,6 +429,9 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             bool tmp = lastIsFolder;
             if (FolderR.Checked && (!over || !lastIsFolder)) getFolderLst();
             else if (VideoR.Checked && (!over || lastIsFolder)) getVideoLst();
+            listView1.SetSortIcon(sorter1.SortColumn, sorter1.SortOrder);
+            listView2.SetSortIcon(sorter2.SortColumn, sorter2.SortOrder);
+            //Refresh();
             setLastFocus();
 
             if (getDataexc)
@@ -646,11 +651,12 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            if (this.sorter.SortOrder == SortOrder.Ascending)
-                this.sorter.SortOrder = SortOrder.Descending;
-            else if (this.sorter.SortOrder == SortOrder.Descending)
-                this.sorter.SortOrder = SortOrder.Ascending;
-            if (sorter.SortColumn != e.Column) this.sorter.SortOrder = SortOrder.Ascending;
+            ListViewItemComparer sorter = VideoR.Checked ? sorter2 : sorter1;
+            if (sorter.SortOrder == SortOrder.Ascending)
+                sorter.SortOrder = SortOrder.Descending;
+            else if (sorter.SortOrder == SortOrder.Descending)
+                sorter.SortOrder = SortOrder.Ascending;
+            if (sorter.SortColumn != e.Column) sorter.SortOrder = SortOrder.Ascending;
             sorter.SortColumn = e.Column;
             setDetail(string.Format("以\"{0}\"排序", listViewItem.Columns[e.Column].Text));
             listViewItem.Sort();
@@ -706,13 +712,12 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
         private void Form1_Shown(object sender, EventArgs e)
         {
             //為ListViewItemSorter指定排序類
-            sorter.SortOrder = SortOrder.Ascending;
-            listView1.ListViewItemSorter = sorter;
-            listView2.ListViewItemSorter = sorter;
+            sorter1.SortOrder = SortOrder.Ascending;
+            sorter2.SortOrder = SortOrder.Ascending;
+            listView1.ListViewItemSorter = sorter1;
+            listView2.ListViewItemSorter = sorter2;
             getData();
             Initial();
-            listView1.SetSortIcon(0, sorter.SortOrder);
-            listView2.SetSortIcon(0, sorter.SortOrder);
             this.MinimumSize = new Size(radioPanel.Location.X + radioPanel.Margin.Horizontal * 2 + radioPanel.Width + searchPanel.Width + searchPanel.Margin.Horizontal * 2 + BtnPanel.Width + BtnPanel.Margin.Horizontal * 2, this.MinimumSize.Height);
             t.Interval = 100;
             t.Tick += new EventHandler(t_Tick);
@@ -809,13 +814,14 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
 
         private void Condition_CheckedChanged(object sender, EventArgs e)
         {
-            sorter.SortColumn = 0;
-            listView1.Visible = !VideoR.Checked;
+            //sorter.SortColumn = 0;
             lastSelect = VideoR.Checked ? lastVSelect : lastFSelect;
             listViewItem = VideoR.Checked ? listView2 : listView1;
-            listViewItem.ListViewItemSorter = sorter;
+            listViewItem.ListViewItemSorter = VideoR.Checked ? sorter2 : sorter1;
 
             Initial();
+            listView1.Visible = !VideoR.Checked;
+            listView2.Visible = VideoR.Checked;
         }
 
         private void random_select()

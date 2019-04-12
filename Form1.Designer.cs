@@ -250,6 +250,7 @@
             this.listView2.TabStop = false;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.View = System.Windows.Forms.View.Details;
+            this.listView2.Visible = false;
             this.listView2.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
             this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
             this.listView2.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
@@ -259,6 +260,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Location = new System.Drawing.Point(240, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(50, 12);
@@ -267,7 +269,8 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::WindowsFormsApplication1.Properties.Resources.giphy__1___1___2_;
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::WindowsFormsApplication1.Properties.Resources.loading;
             this.pictureBox1.Location = new System.Drawing.Point(220, 16);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
