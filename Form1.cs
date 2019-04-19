@@ -531,6 +531,21 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             }
         }
 
+        private void copyAllActress()
+        {
+            List<string> names = new List<string>();
+            int nameIndex = listViewItem == listView2 ? 1 : 0;
+            for (int i = 0; i < listViewItem.Items.Count; ++i)
+            {
+                foreach (string str in listViewItem.Items[i].SubItems[nameIndex].Text.Split(" （）()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                    if (!names.Contains(str) && str != "多人" && str != "素人") names.Add(str);
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (string str in names)
+                stringBuilder.Append(String.Format("\"{0}\",", str));
+            Clipboard.SetText(stringBuilder.Remove(stringBuilder.Length - 1, 1).ToString());
+        }
+
         private void openAndCopyKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Modifiers)
@@ -556,6 +571,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
                     {
                         case Keys.F1: copyFirstColumnToClip(); e.SuppressKeyPress = true; break;
                         case Keys.F2: copySecondColumnToClip(); e.SuppressKeyPress = true; break;
+                        case Keys.F12: copyAllActress(); e.SuppressKeyPress = true; break;
                     }
                     break;
             }
