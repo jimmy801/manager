@@ -194,7 +194,7 @@ cd /d %p:\
 if exist %p:\Data ( 
 cd /D %p:\Data 
 )
-for /F %A in ('dir /ad/b') do @echo %~dpnxA
+for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
 )
 )
 )
