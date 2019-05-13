@@ -841,7 +841,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             lastSelect = VideoR.Checked ? lastVSelect : lastFSelect;
             listViewItem = VideoR.Checked ? listView2 : listView1;
             listViewItem.ListViewItemSorter = VideoR.Checked ? sorter2 : sorter1;
-
+            setListViewSize();
             Initial();
             listView1.Visible = !VideoR.Checked;
             listView2.Visible = VideoR.Checked;
