@@ -107,16 +107,21 @@ namespace WindowsFormsApplication1
             return strOutput;
         }
 
-        private void setBtnSize()
+        private void setListViewSize()
         {
+            int y = 28;
             int div = 2;
             if (!FolderR.Checked) div = 3;
-            int y = 28;
-            pictureBox1.SetBounds((listViewItem.Width - pictureBox1.Width - label1.Width - 6) / 2, y, pictureBox1.Width, pictureBox1.Height);
-            label1.SetBounds(pictureBox1.Right + 3, (pictureBox1.Height - label1.Height) / 2 + y, label1.Width, label1.Height);
             int lstW = (listViewItem.Width - y) / div - 3;
             for (int i = 0; i < listViewItem.Columns.Count; ++i)
                 listViewItem.Columns[i].Width = lstW;
+        }
+
+        private void setBtnSize()
+        {
+            int y = 0;
+            pictureBox1.SetBounds((listViewItem.Width - pictureBox1.Width - label1.Width - 6) / 2, y, pictureBox1.Width, pictureBox1.Height);
+            label1.SetBounds(pictureBox1.Right + 3, (pictureBox1.Height - label1.Height) / 2 + y, label1.Width, label1.Height);
             BtnPanel.SetBounds(toolPanel.Width - BtnPanel.Width - 10, (toolPanel.Height - BtnPanel.Height) / 2, BtnPanel.Width, BtnPanel.Height);
             radioPanel.SetBounds(10, (toolPanel.Height - radioPanel.Height) / 2, radioPanel.Width, radioPanel.Height);
             int p5end = radioPanel.Location.X + radioPanel.Width;
@@ -222,8 +227,7 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
         private void getFolderLst()
         {
             searchText.Enabled = searchBTN.Enabled = rldBTN.Enabled = rdmBTN.Enabled = false;
-            label1.Visible = true;
-            pictureBox1.Visible = true;
+            label1.Visible = pictureBox1.Visible = true;
             total.Text = "處理中";
             /*ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = desktop + @"\folder.bat";
@@ -240,12 +244,11 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
             {
                 listView1.Columns.Add("Folder");
                 listView1.Columns.Add("Location");
-                setBtnSize();
+                setListViewSize();
                 listView1.Items.AddRange(aryF.ToArray());
             }
             else
-                setBtnSize();
-            setDefaultColor();
+                setListViewSize();
             label1.Visible = pictureBox1.Visible = false;
             searchText.Enabled = searchBTN.Enabled = rldBTN.Enabled = rdmBTN.Enabled = true;
             total.Text = String.Format("共 {0} 個項目", listView1.Items.Count.ToString("#,0"));
@@ -367,12 +370,11 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
                 listView2.Columns.Add("Serial Number");
                 listView2.Columns.Add("Actress");
                 listView2.Columns.Add("Location");
-                setBtnSize();
+                setListViewSize();
                 listView2.Items.AddRange(aryV.ToArray());
             }
             else
-                setBtnSize();
-            setDefaultColor();
+                setListViewSize();
             label1.Visible = pictureBox1.Visible = false;
             searchText.Enabled = searchBTN.Enabled = rldBTN.Enabled = rdmBTN.Enabled = true;
             total.Text = String.Format("共 {0} 個項目", listView2.Items.Count.ToString("#,0"));
@@ -429,6 +431,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             bool tmp = lastIsFolder;
             if (FolderR.Checked && (!over || !lastIsFolder)) getFolderLst();
             else if (VideoR.Checked && (!over || lastIsFolder)) getVideoLst();
+            setDefaultColor();
             listView1.SetSortIcon(sorter1.SortColumn, sorter1.SortOrder);
             listView2.SetSortIcon(sorter2.SortColumn, sorter2.SortOrder);
             //Refresh();
@@ -475,7 +478,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            setBtnSize();
+            setListViewSize();
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -727,13 +730,17 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
 
         private void Form1_Shown(object sender, EventArgs e)
         {
+            setBtnSize();
             //為ListViewItemSorter指定排序類
             sorter1.SortOrder = SortOrder.Ascending;
             sorter2.SortOrder = SortOrder.Ascending;
             listView1.ListViewItemSorter = sorter1;
             listView2.ListViewItemSorter = sorter2;
+            listView1.Visible = listView2.Visible = false;
             getData();
             Initial();
+            listView1.Visible = !VideoR.Checked;
+            listView2.Visible = VideoR.Checked;
             this.MinimumSize = new Size(radioPanel.Location.X + radioPanel.Margin.Horizontal * 2 + radioPanel.Width + searchPanel.Width + searchPanel.Margin.Horizontal * 2 + BtnPanel.Width + BtnPanel.Margin.Horizontal * 2, this.MinimumSize.Height);
             t.Interval = 100;
             t.Tick += new EventHandler(t_Tick);
@@ -855,6 +862,23 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
         private void rdm_Click(object sender, EventArgs e)
         {
             random_select();
+        }
+
+        private void searchText_DragDrop(object sender, DragEventArgs e)
+        {
+            searchText.Text = e.Data.GetData(DataFormats.Text).ToString();
+        }
+
+        private void searchText_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
         }
 
         private void textBox1_DoubleClick(object sender, EventArgs e)

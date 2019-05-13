@@ -195,11 +195,14 @@
             // 
             // searchText
             // 
+            this.searchText.AllowDrop = true;
             this.searchText.ImeMode = System.Windows.Forms.ImeMode.On;
             this.searchText.Location = new System.Drawing.Point(3, 3);
             this.searchText.Name = "searchText";
             this.searchText.Size = new System.Drawing.Size(100, 22);
             this.searchText.TabIndex = 2;
+            this.searchText.DragDrop += new System.Windows.Forms.DragEventHandler(this.searchText_DragDrop);
+            this.searchText.DragEnter += new System.Windows.Forms.DragEventHandler(this.searchText_DragEnter);
             this.searchText.DoubleClick += new System.EventHandler(this.textBox1_DoubleClick);
             this.searchText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
