@@ -866,7 +866,17 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
 
         private void searchText_DragDrop(object sender, DragEventArgs e)
         {
-            searchText.Text = e.Data.GetData(DataFormats.Text).ToString();
+            if (e.Data.GetDataPresent(DataFormats.UnicodeText, true))
+            {
+                var data = e.Data.GetData(DataFormats.UnicodeText, true);
+                if (data != null)
+                {
+                    if (data is string)
+                    {
+                        searchText.Text = data as string; // done!
+                    }
+                }
+            }
         }
 
         private void searchText_DragEnter(object sender, DragEventArgs e)
