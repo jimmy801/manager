@@ -16,6 +16,8 @@ namespace WindowsFormsApplication1
     {
         System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
         int tc = 0;
+        int firstFoundI;
+        int firstFoundJ;
         ListViewItemComparer sorter1 = new ListViewItemComparer();
         ListViewItemComparer sorter2 = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
@@ -82,7 +84,7 @@ namespace WindowsFormsApplication1
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.RedirectStandardError = true;
             p.StartInfo.CreateNoWindow = true; //不跳出cmd視窗
-            string strOutput = null;
+            string strOutput = "";
             p.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
             try
@@ -102,7 +104,8 @@ namespace WindowsFormsApplication1
             }
             catch (Exception e)
             {
-                strOutput = e.Message;
+                strOutput = "";
+                //strOutput = e.Message;
             }
             return strOutput;
         }
@@ -240,7 +243,7 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
             p.Close();
             p.Dispose();*/
 
-            if (listView1.Items.Count == 0)
+            if (listView1.Columns.Count == 0)
             {
                 listView1.Columns.Add("Folder");
                 listView1.Columns.Add("Location");
@@ -365,7 +368,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             p.Close();
             p.Dispose();*/
 
-            if (listView2.Items.Count == 0)
+            if (listView2.Columns.Count == 0)
             {
                 listView2.Columns.Add("Serial Number");
                 listView2.Columns.Add("Actress");
@@ -390,7 +393,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
                 searchText.Enabled = searchBTN.Enabled = rldBTN.Enabled = rdmBTN.Enabled = false;
                 Thread.Sleep(10);
             }
-            if (listView2.Items.Count == 0)
+            if (listView2.Columns.Count == 0)
             {
                 listView2.Columns.Add("Serial Number");
                 listView2.Columns.Add("Actress");
@@ -399,7 +402,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
                 listView2.Items.AddRange(aryV.ToArray());
                 listView2.EndUpdate();
             }
-            if (listView1.Items.Count == 0)
+            if (listView1.Columns.Count == 0)
             {
                 listView1.Columns.Add("Folder");
                 listView1.Columns.Add("Location");
@@ -488,7 +491,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
 
         private void t_Tick(object sender, EventArgs e)
         {
-            if (tc++ == 50)
+            if (tc++ == 10)
             {
                 total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
                 t.Stop();
@@ -499,6 +502,8 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
         private void setDetail(string msg)
         {
             total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
+            t.Stop();
+            tc = 0;
             t.Start();
             total.Text += ", " + msg;
         }
@@ -610,13 +615,17 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             if (string.IsNullOrWhiteSpace(searchText.Text)) return;
             int startI = listViewItem.SelectedItems.Count > 0 ? listViewItem.SelectedItems[0].Index + interval < listViewItem.Items.Count ? listViewItem.SelectedItems[0].Index + interval >= 0 ? listViewItem.SelectedItems[0].Index + interval : listViewItem.Items.Count - 1 : 0 : 0;
             int endI = interval > 0 ? listViewItem.Items.Count : 0;
-            int init_pos = startI;
+            bool lastFound = firstFoundI >= 0;
+            int lastI = firstFoundI;
+            int lastJ = firstFoundJ;
             bool found = false;
             for (int i = startI; interval > 0 ? i < endI : i >= endI; i += interval)
             {
                 for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
                     if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(searchText.Text), StringComparison.OrdinalIgnoreCase) >= 0)
                     {
+                        if (!lastFound) { firstFoundI = i; firstFoundJ = j; }
+                        else { lastI = i; lastJ = j; }
                         cancelSelected();
                         listViewItem.Items[i].Selected = true;
                         listViewItem.EnsureVisible(i);
@@ -636,6 +645,8 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
                 }
             }
             if (!found) setDetail(string.Format("找不到\"{0}\"", ToNarrow(searchText.Text)));
+            else if (lastI == firstFoundI)
+                setDetail(string.Format("已經回到搜尋起點\"{0}\"", listViewItem.Items[firstFoundI].SubItems[firstFoundJ].Text));
         }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
@@ -685,7 +696,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             listViewItem.SetSortIcon(e.Column, sorter.SortOrder);
         }
 
-        private void findRepeat()
+        private void findDuplicate()
         {
             StringBuilder sb = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
@@ -717,7 +728,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
                     pos = -1;
                 }
             }
-            if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).Show();
+            if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).ShowDialog(this);
         }
 
         private void searchBTN_Click(object sender, EventArgs e)
@@ -725,7 +736,7 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             if (Control.ModifierKeys == Keys.Shift) search(-1);
             else search(1);
             if (string.IsNullOrWhiteSpace(searchText.Text) && VideoR.Checked)
-                findRepeat();
+                findDuplicate();
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -889,6 +900,11 @@ dir /b /on /s %p:\*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.
             {
                 e.Effect = DragDropEffects.None;
             }
+        }
+
+        private void searchText_TextChanged(object sender, EventArgs e)
+        {
+            firstFoundI = firstFoundJ = -1;
         }
 
         private void textBox1_DoubleClick(object sender, EventArgs e)
