@@ -266,18 +266,24 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
             Stopwatch sw = new Stopwatch();//Stopwatch類別在System.Diagnostics命名空間裡
             sw.Reset();
             sw = Stopwatch.StartNew();
-            string types = "*.mp4 *.rmvb *.avi *.mkv *.mpg *.flv *.wmv *.m4v *.3gp *.ts *.webm *.vob *.ovg *.ogg *.drc *.mng *.mts *.m2ts *.mov *.qt *.yuv *.rm *.asf *.amv *.m4p *.mp2 *.mpeg *.mpe *.mpv *.m2v *.svi *.3g2 *.mxf *.roq *.nsv *.f4v *f4p *f4a *f4a";
-            types = "dir /b /on /s %p:\\" + String.Join(" && dir /b /on /s %p:\\", types.Split(' '));
+            string allNames = " *.";
+            string []videoTypes = {"mp4", "rmvb", "avi", "mkv", "mpg", "flv", "wmv", "m4v", "3gp", "ts", "webm", "vob", "ovg", "ogg", "drc",
+                "mng", "mts", "m2ts", "mov", "qt", "yuv", "rm", "asf", "amv", "m4p", "mp2", "mpeg", "mpe", "mpv", "m2v", "svi", "3g2",
+                "mxf", "roq", "nsv", "f4v", "f4p", "f4a" };
+            string []allTypes = (allNames + string.Join(allNames, videoTypes)).Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string main_cmd = "dir /b /on /s %p:\\Data\\";
+            string ignoreUnfind = " 2>nul";
+            string cmd = main_cmd + string.Join(ignoreUnfind + " & " + main_cmd, allTypes) + ignoreUnfind;
             string[] tmp = CommandOutput(String.Format(@"
-for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
+for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do ( 
 if exist %p:\ ( 
-for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""{0}""') do (
-if ""%i"" NEQ """" (
-{1}
+for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""{0}""') do ( 
+if ""%i"" NEQ """" ( 
+dir /b /on /s %p:\Data\{1} 
 )
 )
 )
-)", deskNames, types)).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+)", deskNames, cmd)).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             VcmdT = sw.ElapsedMilliseconds;
             string[] tmpstr;
             string actress = "";
