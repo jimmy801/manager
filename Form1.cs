@@ -295,7 +295,7 @@ dir /b /on /s %p:\Data\{1}
             {
                 try
                 {
-                    actressLst = File.ReadAllLines(string.Format(@"{0}:\多人\人名.txt", i));
+                    actressLst = File.ReadAllLines(string.Format(@"{0}:\Data\多人\人名.txt", i));
                     break;
                 }
                 catch { }
@@ -673,6 +673,7 @@ dir /b /on /s %p:\Data\{1}
                             listViewItem.Focus();
                             if (listViewItem.SelectedItems.Count == 1)
                                 listViewItem.SelectedItems[0].Focused = true;
+                            searchText.Focus();
                             e.SuppressKeyPress = true;
                             break;
                         case Keys.Enter:
