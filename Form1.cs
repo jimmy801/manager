@@ -267,10 +267,10 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
             sw.Reset();
             sw = Stopwatch.StartNew();
             string allNames = " *.";
-            string []videoTypes = {"mp4", "rmvb", "avi", "mkv", "mpg", "flv", "wmv", "m4v", "3gp", "ts", "webm", "vob", "ovg", "ogg", "drc",
+            string[] videoTypes = {"mp4", "rmvb", "avi", "mkv", "mpg", "flv", "wmv", "m4v", "3gp", "ts", "webm", "vob", "ovg", "ogg", "drc",
                 "mng", "mts", "m2ts", "mov", "qt", "yuv", "rm", "asf", "amv", "m4p", "mp2", "mpeg", "mpe", "mpv", "m2v", "svi", "3g2",
                 "mxf", "roq", "nsv", "f4v", "f4p", "f4a" };
-            string []allTypes = (allNames + string.Join(allNames, videoTypes)).Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] allTypes = (allNames + string.Join(allNames, videoTypes)).Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             string main_cmd = "dir /b /on /s %p:\\Data\\";
             string ignoreUnfind = " 2>nul";
             string cmd = main_cmd + string.Join(ignoreUnfind + " & " + main_cmd, allTypes) + ignoreUnfind;
@@ -289,23 +289,24 @@ dir /b /on /s %p:\Data\{1}
             string actress = "";
             string loc = "";
             string[] actressLst = null;
+            string[] VRActressLst = null;
             string tmpSerialNum = "";
             int backDash = 0;
-            for (char i = 'D'; i <= 'Z'; ++i)
+            byte n = 0;
+            for (char i = 'D'; i <= 'Z' && !n.Equals(2); ++i)
             {
                 try
                 {
                     actressLst = File.ReadAllLines(string.Format(@"{0}:\Data\多人\人名.txt", i));
-                    break;
+                    n++;
                 }
-                catch {
-                    try
-                    {
-                        actressLst = File.ReadAllLines(string.Format(@"{0}:\Data\VR\多人\人名.txt", i));
-                        break;
-                    }
-                    catch { }
+                catch { }
+                try
+                {
+                    VRActressLst = File.ReadAllLines(string.Format(@"{0}:\Data\VR\多人\人名.txt", i));
+                    n++;
                 }
+                catch { }
                 //if (Directory.Exists(string.Format(@"{0}:\多人", i)))
                 //{
                 //    if (File.Exists(string.Format(@"{0}:\多人\人名.txt", i)))
@@ -327,6 +328,15 @@ dir /b /on /s %p:\Data\{1}
                     }
                     catch { }
                 }
+                foreach (var a in VRActressLst)
+                {
+                    try
+                    {
+                        tmpstr = a.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                        actressList.Add(tmpstr[0], tmpstr[1]);
+                    }
+                    catch { }
+                }
             }
             catch { }
             foreach (var t in tmp)
@@ -338,11 +348,13 @@ dir /b /on /s %p:\Data\{1}
                 backDash = t.LastIndexOf('\\') + 1;
                 loc = t.Substring(0, backDash);
                 for (int i = 2; i < tmpstr.Length; ++i)
+                {
                     if (!tmpstr[i].Contains("Data") && !tmpstr[i].Contains("多人") && !tmpstr[i].Contains("VR"))
                     {
                         actress = tmpstr[i];
                         break;
                     }
+                }
                 if (loc.Contains(@"\多人\"))
                 {
                     try
