@@ -201,8 +201,8 @@ if ""%i"" NEQ """" (
 cd /d %p:\
 if exist %p:\Data ( 
 cd /D %p:\Data 
-)
 for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
+)
 )
 )
 )
@@ -277,9 +277,11 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
             string[] tmp = CommandOutput(String.Format(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do ( 
 if exist %p:\ ( 
+if exist %p:\Data\ (
 for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""{0}""') do ( 
 if ""%i"" NEQ """" ( 
 dir /b /on /s %p:\Data\{1} 
+)
 )
 )
 )
