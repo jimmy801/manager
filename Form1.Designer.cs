@@ -67,6 +67,7 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
+            this.listView1.HideSelection = false;
             this.listView1.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
@@ -246,6 +247,7 @@
             this.listView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView2.FullRowSelect = true;
             this.listView2.GridLines = true;
+            this.listView2.HideSelection = false;
             this.listView2.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.listView2.Location = new System.Drawing.Point(0, 0);
             this.listView2.Name = "listView2";
@@ -296,7 +298,7 @@
             // total
             // 
             this.total.Name = "total";
-            this.total.Size = new System.Drawing.Size(489, 17);
+            this.total.Size = new System.Drawing.Size(520, 17);
             this.total.Spring = true;
             this.total.Text = "處理中";
             this.total.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -312,6 +314,7 @@
             this.Name = "AV管家";
             this.Text = "AV管家";
             this.Deactivate += new System.EventHandler(this.Form1_Deactivate);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AV管家_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.contextMenuStrip1.ResumeLayout(false);

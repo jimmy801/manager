@@ -34,6 +34,8 @@ namespace WindowsFormsApplication1
         List<ListViewItem> aryF = new List<ListViewItem>();
         List<ListViewItem> aryV = new List<ListViewItem>();
         ListView listViewItem;
+        Thread t1 = null;
+        Thread t2 = null;
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -225,6 +227,7 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
             sw.Stop();
             FtotalT = sw.ElapsedMilliseconds;
             FalreadyRun = true;
+            t2.Abort();
         }
 
         private void getFolderLst()
@@ -378,6 +381,7 @@ dir /b /on /s %p:\Data\{1}
             sw.Stop();
             VtotalT = sw.ElapsedMilliseconds;
             ValreadyRun = true;
+            t1.Abort();
         }
 
         private void getVideoLst()
@@ -445,10 +449,10 @@ dir /b /on /s %p:\Data\{1}
         private void getData()
         {
             getDataexc = true;
-            Thread t1 = new Thread(forVideo);
+            t1 = new Thread(forVideo);
             t1.Start();
 
-            Thread t2 = new Thread(forFolder);
+            t2 = new Thread(forFolder);
             t2.Start();
 
             waitForBatch();
@@ -462,11 +466,15 @@ dir /b /on /s %p:\Data\{1}
             bool tmp = lastIsFolder;
             if (FolderR.Checked && (!over || !lastIsFolder)) getFolderLst();
             else if (VideoR.Checked && (!over || lastIsFolder)) getVideoLst();
-            setDefaultColor();
-            listView1.SetSortIcon(sorter1.SortColumn, sorter1.SortOrder);
-            listView2.SetSortIcon(sorter2.SortColumn, sorter2.SortOrder);
-            //Refresh();
-            setLastFocus();
+            try
+            {
+                setDefaultColor();
+                listView1.SetSortIcon(sorter1.SortColumn, sorter1.SortOrder);
+                listView2.SetSortIcon(sorter2.SortColumn, sorter2.SortOrder);
+                //Refresh();
+                setLastFocus();
+            }
+            catch { }
 
             if (getDataexc)
             {
@@ -538,7 +546,7 @@ dir /b /on /s %p:\Data\{1}
             t.Stop();
             tc = 0 - (int)((sec - 1) * 10);
             t.Start();
-            if(!String.IsNullOrWhiteSpace(msg))
+            if (!String.IsNullOrWhiteSpace(msg))
                 total.Text += ", " + msg;
         }
 
@@ -955,6 +963,15 @@ dir /b /on /s %p:\Data\{1}
         private void searchText_TextChanged(object sender, EventArgs e)
         {
             firstFoundI = firstFoundJ = -1;
+        }
+
+        private void AV管家_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try { t1.Abort(); }
+            catch { }
+            try { t2.Abort(); }
+            catch { }
+            FalreadyRun = ValreadyRun = true;
         }
 
         private void textBox1_DoubleClick(object sender, EventArgs e)
