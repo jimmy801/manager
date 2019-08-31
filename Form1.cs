@@ -52,6 +52,7 @@ namespace WindowsFormsApplication1
             listViewItem = listView1;
             lastSelect = lastFSelect;
             this.ShowIcon = true;
+            statusStrip1.Renderer = new CustomRenderer();
         }
 
         ///<summary>
@@ -469,7 +470,7 @@ dir /b /on /s %p:\Data\{1}
 
             if (getDataexc)
             {
-                setDetail(String.Format("CMD: {0} sec, Other: {1} sec, Total: {2} sec", Convert.ToSingle(VcmdT + FcmdT) / 1000, Convert.ToSingle(VtotalT - VcmdT + FtotalT - FcmdT) / 1000, Convert.ToSingle(VtotalT + FtotalT) / 1000));
+                setDetail(String.Format("CMD: {0} sec, Other: {1} sec, Total: {2} sec", Convert.ToSingle(VcmdT + FcmdT) / 1000, Convert.ToSingle(VtotalT - VcmdT + FtotalT - FcmdT) / 1000, Convert.ToSingle(VtotalT + FtotalT) / 1000), 3);
                 getDataexc = false;
             }
             over = true;
@@ -528,11 +529,17 @@ dir /b /on /s %p:\Data\{1}
 
         private void setDetail(string msg)
         {
+            setDetail(msg, 1);
+        }
+
+        private void setDetail(string msg, double sec)
+        {
             total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
             t.Stop();
-            tc = 0;
+            tc = 0 - (int)((sec - 1) * 10);
             t.Start();
-            total.Text += ", " + msg;
+            if(!String.IsNullOrWhiteSpace(msg))
+                total.Text += ", " + msg;
         }
 
         private void copyFirstColumnToClip()
@@ -548,21 +555,21 @@ dir /b /on /s %p:\Data\{1}
                     sb.Append(listViewItem.Items[i].Text.Substring(0, dotP));
                 }
             Clipboard.SetText(sb.ToString());
-            setDetail(string.Format("已複製\"{0}\"", sb.ToString()));
+            setDetail(string.Format("已複製\"{0}\"", sb.ToString()), 1.5);
         }
 
-        private void copySecondColumnToClip()
+        private void copyOtherColumnToClip(int n)
         {
-            if (listViewItem.SelectedItems.Count == 1)
+            if (listViewItem.SelectedItems.Count != 1 || listViewItem.Items[0].SubItems.Count <= n) return;
+            for (int i = 0; i < listViewItem.Items.Count; ++i)
             {
-                for (int i = 0; i < listViewItem.Items.Count; ++i)
-                    if (listViewItem.Items[i].Selected)
-                    {
-                        string copyStr = listViewItem.Items[i].SubItems[1].Text;
-                        Clipboard.SetText(copyStr);
-                        setDetail(string.Format("已複製\"{0}\"", copyStr));
-                        break;
-                    }
+                if (listViewItem.Items[i].Selected)
+                {
+                    string copyStr = listViewItem.Items[i].SubItems[n].Text;
+                    Clipboard.SetText(copyStr);
+                    setDetail(string.Format("已複製\"{0}\"", copyStr), 1.5);
+                    break;
+                }
             }
         }
 
@@ -605,7 +612,8 @@ dir /b /on /s %p:\Data\{1}
                     switch (e.KeyCode)
                     {
                         case Keys.F1: copyFirstColumnToClip(); e.SuppressKeyPress = true; break;
-                        case Keys.F2: copySecondColumnToClip(); e.SuppressKeyPress = true; break;
+                        case Keys.F2: copyOtherColumnToClip(1); e.SuppressKeyPress = true; break;
+                        case Keys.F3: copyOtherColumnToClip(2); e.SuppressKeyPress = true; break;
                         case Keys.F12: copyAllActress(); e.SuppressKeyPress = true; break;
                     }
                     break;
@@ -716,7 +724,7 @@ dir /b /on /s %p:\Data\{1}
                 sorter.SortOrder = SortOrder.Ascending;
             if (sorter.SortColumn != e.Column) sorter.SortOrder = SortOrder.Ascending;
             sorter.SortColumn = e.Column;
-            setDetail(string.Format("以\"{0}\"排序", listViewItem.Columns[e.Column].Text));
+            setDetail(string.Format("以\"{0}\"排序", listViewItem.Columns[e.Column].Text), 2);
             listViewItem.Sort();
             setDefaultColor();
             if (listViewItem.SelectedItems.Count > 0)
@@ -814,8 +822,8 @@ dir /b /on /s %p:\Data\{1}
                         else selected = "\"" + listViewItem.Items[j].SubItems[2].Text;
                         fileName = listViewItem.SelectedItems[i].Text + "\"";
                         b = true;
-                        if (listViewItem.Items[j].SubItems.Count == 2) setDetail("資料夾開啟中...");
-                        else setDetail("檔案開啟中...");
+                        if (listViewItem.Items[j].SubItems.Count == 2) setDetail("資料夾開啟中...", int.MaxValue / 10);
+                        else setDetail("檔案開啟中...", int.MaxValue / 10);
                         break;
                     }
                 }
@@ -830,12 +838,14 @@ dir /b /on /s %p:\Data\{1}
             p.Start();
             p.WaitForExit();
             p.Close();
+            p.Dispose();
+            setDetail("");
         }
 
         private void openFolder()
         {
-            string selected;
-            string fileName;
+            string selected = "";
+            string fileName = "";
             bool b = false;
             for (int i = 0; i < listViewItem.SelectedItems.Count; ++i)
             {
@@ -847,14 +857,26 @@ dir /b /on /s %p:\Data\{1}
                             selected = listViewItem.Items[j].SubItems[1].Text;
                         else selected = listViewItem.Items[j].SubItems[2].Text;
                         fileName = listViewItem.SelectedItems[i].Text;
-                        new Thread(() => waitForExplorer(selected + fileName)).Start();
+                        setDetail("資料夾開啟中...", 1.5);
+                        //new Thread(() => waitForExplorer(selected + fileName)).Start();
                         b = true;
-                        setDetail("資料夾開啟中...");
                         break;
                     }
                 }
                 if (b) break;
             }
+            if (!b) return;
+            //Process.Start("explorer.exe", "/select, " + selected + fileName);
+            Process p = new Process();
+            string arg;
+            string file = @"C:\Windows\explorer.exe";
+            arg = "/select, " + selected + fileName;
+            p.StartInfo.FileName = file;
+            p.StartInfo.Arguments = arg;
+            p.Start();
+            p.WaitForExit();
+            p.Close();
+            p.Dispose();
         }
 
         private void openWithFileManagerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1085,6 +1107,19 @@ dir /b /on /s %p:\Data\{1}
                 return (-CompareResult);
             else
                 return 0;
+        }
+    }
+
+    public class CustomRenderer : ToolStripProfessionalRenderer
+    {
+        protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+        {
+            if (e.Item is ToolStripStatusLabel)
+                TextRenderer.DrawText(e.Graphics, e.Text, e.TextFont,
+                    e.TextRectangle, e.TextColor, Color.Transparent,
+                    e.TextFormat | TextFormatFlags.EndEllipsis);
+            else
+                base.OnRenderItemText(e);
         }
     }
 }

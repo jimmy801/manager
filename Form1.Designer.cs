@@ -296,8 +296,10 @@
             // total
             // 
             this.total.Name = "total";
-            this.total.Size = new System.Drawing.Size(43, 17);
+            this.total.Size = new System.Drawing.Size(489, 17);
+            this.total.Spring = true;
             this.total.Text = "處理中";
+            this.total.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // AV管家
             // 
