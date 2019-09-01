@@ -72,6 +72,7 @@
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(535, 451);
             this.listView1.TabIndex = 0;
+            this.listView1.TabStop = false;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
@@ -154,7 +155,7 @@
             this.radioPanel.Controls.Add(this.FolderR);
             this.radioPanel.Location = new System.Drawing.Point(3, 10);
             this.radioPanel.Name = "radioPanel";
-            this.radioPanel.Size = new System.Drawing.Size(113, 26);
+            this.radioPanel.Size = new System.Drawing.Size(113, 23);
             this.radioPanel.TabIndex = 7;
             // 
             // VideoR
@@ -164,6 +165,7 @@
             this.VideoR.Name = "VideoR";
             this.VideoR.Size = new System.Drawing.Size(51, 16);
             this.VideoR.TabIndex = 1;
+            this.VideoR.TabStop = true;
             this.VideoR.Text = "Video";
             this.VideoR.UseVisualStyleBackColor = true;
             this.VideoR.CheckedChanged += new System.EventHandler(this.Condition_CheckedChanged);
@@ -254,7 +256,6 @@
             this.listView2.TabStop = false;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.View = System.Windows.Forms.View.Details;
-            this.listView2.Visible = false;
             this.listView2.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
             this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
             this.listView2.DoubleClick += new System.EventHandler(this.listView_DoubleClick);

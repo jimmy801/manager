@@ -151,7 +151,6 @@ namespace WindowsFormsApplication1
             {
                 listViewItem.SelectedItems[i].BackColor = SystemColors.Highlight;
                 listViewItem.SelectedItems[i].ForeColor = Color.White;
-                lastSelect.Add(listViewItem.SelectedItems[i].Index);
             }
         }
 
@@ -170,6 +169,8 @@ namespace WindowsFormsApplication1
             finally
             {
                 lastSelect.Clear();
+                for (int i = 0; i < listViewItem.SelectedItems.Count; ++i)
+                    lastSelect.Add(listViewItem.SelectedItems[i].Index);
             }
         }
 
@@ -492,6 +493,8 @@ if ""%i"" NEQ """" (
             FalreadyRun = false;
             ValreadyRun = false;
             over = false;
+            listView1.Hide();
+            listView2.Hide();
             List<string> last = new List<string>();
             for (int i = listViewItem.SelectedItems.Count - 1; i >= 0; --i)
                 last.Add(listViewItem.SelectedItems[i].Text);
@@ -511,6 +514,7 @@ if ""%i"" NEQ """" (
                     listViewItem.FindItemWithText(lvi).Selected = true;
             }
             catch { }
+            finally { listViewItem.Show(); }
         }
 
         private void rldBTN_Click(object sender, EventArgs e)
@@ -520,6 +524,7 @@ if ""%i"" NEQ """" (
 
         private void Form1_Resize(object sender, EventArgs e)
         {
+            setBtnSize();
             setListViewSize();
         }
 
@@ -532,7 +537,7 @@ if ""%i"" NEQ """" (
         {
             if (tc++ == 10)
             {
-                if(!label1.Visible)
+                if (!label1.Visible)
                     total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
                 t.Stop();
                 tc = 0;
@@ -546,7 +551,7 @@ if ""%i"" NEQ """" (
 
         private void setDetail(string msg, double sec)
         {
-            if(!label1.Visible)
+            if (!label1.Visible)
                 total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
             t.Stop();
             tc = 0 - (int)((sec - 1) * 10);
@@ -601,8 +606,19 @@ if ""%i"" NEQ """" (
             Clipboard.SetText(stringBuilder.Remove(stringBuilder.Length - 1, 1).ToString());
         }
 
+        private void change_radio()
+        {
+            if (!FolderR.Checked) { FolderR.Focus(); FolderR.Checked = true; }
+            else { VideoR.Focus(); VideoR.Checked = true; }
+        }
+
         private void openAndCopyKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Shift && e.Control && e.KeyCode == Keys.Tab)
+            {
+                change_radio();
+                return;
+            }
             switch (e.Modifiers)
             {
                 case Keys.Control:
@@ -612,6 +628,7 @@ if ""%i"" NEQ """" (
                         case Keys.L: reload(); e.SuppressKeyPress = true; break;
                         case Keys.R: random_select(); e.SuppressKeyPress = true; break;
                         case Keys.F: searchText.Focus(); searchText.SelectAll(); e.SuppressKeyPress = true; break;
+                        case Keys.Tab: change_radio(); break;
                         default: break;
                     }
                     break;
@@ -996,6 +1013,7 @@ if ""%i"" NEQ """" (
 
     }
 
+    #region sorting by column header listview
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public static class ListViewExtensions
     {
@@ -1131,7 +1149,9 @@ if ""%i"" NEQ """" (
                 return 0;
         }
     }
+    #endregion
 
+    #region staus strip text too long make them become to "..."
     public class CustomRenderer : ToolStripProfessionalRenderer
     {
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
@@ -1144,4 +1164,5 @@ if ""%i"" NEQ """" (
                 base.OnRenderItemText(e);
         }
     }
+    #endregion
 }
