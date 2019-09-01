@@ -200,7 +200,7 @@ namespace WindowsFormsApplication1
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 if exist %p:\ (
 if exist %p:\Data ( 
-for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""{0}""') do (
+for /f %i in ('dir %p: ^| findstr ""{0}""') do (
 if ""%i"" NEQ """" (
 cd /D %p:\Data 
 for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
@@ -269,21 +269,24 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
             Stopwatch sw = new Stopwatch();//Stopwatch類別在System.Diagnostics命名空間裡
             sw.Reset();
             sw = Stopwatch.StartNew();
-            string allNames = " *.";
+            string path = "%p:\\Data\\";
+            string allNames = "*.";
+            string separate_pre = " " + path + allNames;
             string[] videoTypes = {"mp4", "rmvb", "avi", "mkv", "mpg", "flv", "wmv", "m4v", "3gp", "ts", "webm", "vob", "ovg", "ogg", "drc",
                 "mng", "mts", "m2ts", "mov", "qt", "yuv", "rm", "asf", "amv", "m4p", "mp2", "mpeg", "mpe", "mpv", "m2v", "svi", "3g2",
                 "mxf", "roq", "nsv", "f4v", "f4p", "f4a" };
             string[] allTypes = (allNames + string.Join(allNames, videoTypes)).Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            string main_cmd = "dir /b /on /s %p:\\Data\\";
+            string main_cmd = "dir /b /s";
             string ignoreUnfind = " 2>nul";
-            string cmd = main_cmd + string.Join(ignoreUnfind + " & " + main_cmd, allTypes) + ignoreUnfind;
+            //string cmd = main_cmd + string.Join(ignoreUnfind + " & " + main_cmd, allTypes) + ignoreUnfind;
+            string cmd = main_cmd + separate_pre + string.Join(separate_pre, videoTypes) + ignoreUnfind;
             string[] tmp = CommandOutput(String.Format(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do ( 
 if exist %p:\ ( 
 if exist %p:\Data\ (
-for /f ""tokens=4"" %i in ('vol %p: ^| findstr ""{0}""') do ( 
+for /f %i in ('dir %p: ^| findstr ""{0}""') do ( 
 if ""%i"" NEQ """" ( 
-dir /b /on /s %p:\Data\{1} 
+{1} 
 )
 )
 )
@@ -529,7 +532,8 @@ dir /b /on /s %p:\Data\{1}
         {
             if (tc++ == 10)
             {
-                total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
+                if(!label1.Visible)
+                    total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
                 t.Stop();
                 tc = 0;
             }
@@ -542,7 +546,8 @@ dir /b /on /s %p:\Data\{1}
 
         private void setDetail(string msg, double sec)
         {
-            total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
+            if(!label1.Visible)
+                total.Text = String.Format("共 {0} 個項目", listViewItem.Items.Count.ToString("#,0"));
             t.Stop();
             tc = 0 - (int)((sec - 1) * 10);
             t.Start();
