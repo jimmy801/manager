@@ -454,9 +454,11 @@ if ""%i"" NEQ """" (
         {
             getDataexc = true;
             t1 = new Thread(forVideo);
+            t1.IsBackground = true;
             t1.Start();
 
             t2 = new Thread(forFolder);
+            t2.IsBackground = true;
             t2.Start();
 
             waitForBatch();
@@ -994,6 +996,7 @@ if ""%i"" NEQ """" (
             try { t2.Abort(); }
             catch { }
             FalreadyRun = ValreadyRun = true;
+            System.Environment.Exit(0);
         }
 
         private void textBox1_DoubleClick(object sender, EventArgs e)
