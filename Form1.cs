@@ -689,7 +689,7 @@ if ""%i"" NEQ """" (
             for (int i = startI; interval > 0 ? i < endI : i >= endI; i += interval)
             {
                 for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
-                    if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(searchText.Text), StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(searchText.Text).Trim(new char[]{ ' ', '\t', '\n'}), StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         if (!lastFound) { firstFoundI = i; firstFoundJ = j; }
                         else { lastI = i; lastJ = j; }
