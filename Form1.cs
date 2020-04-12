@@ -28,6 +28,7 @@ namespace WindowsFormsApplication1
         bool ValreadyRun = false;
         bool FalreadyRun = false;
         long VcmdT, VtotalT, FcmdT, FtotalT;
+        public string value;
         List<int> lastSelect;
         List<int> lastFSelect = new List<int>();
         List<int> lastVSelect = new List<int>();
@@ -627,6 +628,7 @@ if ""%i"" NEQ """" (
                     switch (e.KeyCode)
                     {
                         case Keys.O: openFolder(); e.SuppressKeyPress = true; break;
+                        case Keys.M: multiFind(); e.SuppressKeyPress = true; break;
                         case Keys.L: reload(); e.SuppressKeyPress = true; break;
                         case Keys.R: random_select(); e.SuppressKeyPress = true; break;
                         case Keys.F: searchText.Focus(); searchText.SelectAll(); e.SuppressKeyPress = true; break;
@@ -762,6 +764,120 @@ if ""%i"" NEQ """" (
             if (listViewItem.SelectedItems.Count > 0)
                 listViewItem.EnsureVisible(listViewItem.SelectedItems[0].Index);
             listViewItem.SetSortIcon(e.Column, sorter.SortOrder);
+        }
+
+        public static DialogResult InputBox(string title, string promptText, ref string value)
+        {
+            Form form = new Form();
+            Label label = new Label();
+            TextBox textBox = new TextBox();
+            Button buttonOk = new Button();
+            Button buttonCancel = new Button();
+
+            form.Text = title;
+            label.Text = promptText;
+            textBox.Text = value;
+            textBox.Multiline = true;
+            // Add vertical scroll bars to the TextBox control.
+            textBox.ScrollBars = ScrollBars.Vertical;
+            // Allow the RETURN key to be entered in the TextBox control.
+            textBox.AcceptsReturn = true;
+            // Allow the TAB key to be entered in the TextBox control.
+            textBox.AcceptsTab = true;
+            // Set WordWrap to true to allow text to wrap to the next line.
+            textBox.WordWrap = true;
+
+            buttonOk.Text = "OK";
+            buttonCancel.Text = "Cancel";
+            buttonOk.DialogResult = DialogResult.OK;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+
+            label.SetBounds(9, 20, 372, 13);
+            /*textBox.SetBounds(12, 36, 372, 20);
+            buttonOk.SetBounds(228, 72, 75, 23);
+            buttonCancel.SetBounds(309, 72, 75, 23);*/
+
+            label.AutoSize = true;
+            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            //form.ClientSize = new Size(396, 107);
+            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+            //form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+            form.CancelButton = buttonCancel;
+
+            DialogResult dialogResult = form.ShowDialog();
+            value = textBox.Text;
+            return dialogResult;
+        }
+
+        private void multiFind()
+        {
+            if (new InputForm(this).ShowDialog() == DialogResult.Cancel) return;
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sb2 = new StringBuilder();
+
+            foreach (string s in value.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+            {
+                string found = s;
+                for(int i = 0; i < listViewItem.Items.Count; i++)
+                {
+                    for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
+                    {
+                        //System.Console.WriteLine(listViewItem.Items[i].SubItems[j].Text);
+                        if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(s).Trim(new char[] { ' ', '\t', '\n' }), StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            found = listViewItem.Items[i].SubItems[j].Text;
+                            //System.Console.WriteLine("found");
+                            break;
+                        }
+                    }
+                    if (found != s) break;
+                }
+                //System.Console.WriteLine(found);
+                if (found == s)
+                {
+                    sb.Append(found + '\t');
+                    sb2.Append("0\t");
+                }
+                else
+                {
+                    sb.Append(found + '\t');
+                    sb2.Append("1\t");
+                }
+            }
+            /*for (int i = 1; i < listViewItem.Items.Count; i++)
+            {
+                pos = pos < 0 ? i - 1 : pos;
+                f1 = listViewItem.Items[pos].Text.Substring(0, listViewItem.Items[pos].Text.LastIndexOf('.'));
+                f2 = listViewItem.Items[i].Text.Substring(0, listViewItem.Items[i].Text.LastIndexOf('.'));
+                if (f1.Contains(f2) || f2.Contains(f1))
+                {
+                    if (pos == i - 1)
+                        sb.Append(listViewItem.Items[pos].SubItems[2].Text + listViewItem.Items[pos].SubItems[0].Text + '\t');
+                    sb.Append(listViewItem.Items[i].SubItems[2].Text + listViewItem.Items[i].SubItems[0].Text + '\t');
+                    if (add) count++;
+                    else count += 2;
+                    add = true;
+                }
+                else
+                {
+                    if (add)
+                    {
+                        sb2.Append(count.ToString() + '\t');
+                        add = false;
+                    }
+                    pos = -1;
+                }
+            }*/
+            if (sb.Length > 0) new Form3(sb.ToString(), sb2.ToString()).ShowDialog(this);
+
         }
 
         private void findDuplicate()
