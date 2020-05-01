@@ -586,7 +586,12 @@ if ""%i"" NEQ """" (
             {
                 if (listViewItem.Items[i].Selected)
                 {
-                    string copyStr = listViewItem.Items[i].SubItems[n].Text;
+                    string copyStr = "";
+                    if (n > 0) copyStr = listViewItem.Items[i].SubItems[n].Text;
+                    else
+                    {
+                        copyStr = listViewItem.Items[i].SubItems[listViewItem.Items[i].SubItems.Count - 1].Text + listViewItem.Items[i].SubItems[0].Text;
+                    }
                     Clipboard.SetText(copyStr);
                     setDetail(string.Format("已複製\"{0}\"", copyStr), 1.5);
                     break;
@@ -648,6 +653,7 @@ if ""%i"" NEQ """" (
                         case Keys.F1: copyFirstColumnToClip(); e.SuppressKeyPress = true; break;
                         case Keys.F2: copyOtherColumnToClip(1); e.SuppressKeyPress = true; break;
                         case Keys.F3: copyOtherColumnToClip(2); e.SuppressKeyPress = true; break;
+                        case Keys.F4: copyOtherColumnToClip(-1); e.SuppressKeyPress = true; break;
                         case Keys.F12: copyAllActress(); e.SuppressKeyPress = true; break;
                     }
                     break;
@@ -825,23 +831,24 @@ if ""%i"" NEQ """" (
 
             foreach (string s in value.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
-                string found = s;
+                string str = s.Substring(0, s.LastIndexOf('.')).Trim();
+                string found = str;
                 for(int i = 0; i < listViewItem.Items.Count; i++)
                 {
                     for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
                     {
                         //System.Console.WriteLine(listViewItem.Items[i].SubItems[j].Text);
-                        if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(s).Trim(new char[] { ' ', '\t', '\n' }), StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(str).Trim(new char[] { ' ', '\t', '\n' }), StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            found = listViewItem.Items[i].SubItems[j].Text;
+                            found = listViewItem.Items[i].SubItems[2].Text + listViewItem.Items[i].SubItems[0].Text;
                             //System.Console.WriteLine("found");
                             break;
                         }
                     }
-                    if (found != s) break;
+                    if (found != str) break;
                 }
                 //System.Console.WriteLine(found);
-                if (found == s)
+                if (found == str)
                 {
                     sb.Append(found + '\t');
                     sb2.Append("0\t");

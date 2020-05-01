@@ -27,5 +27,16 @@ namespace WindowsFormsApplication1
                 listView1.Items[i].ForeColor = Color.Black;
             }
         }
+
+        private void listView1_DoubleClick(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process p = new System.Diagnostics.Process();
+            string arg;
+            string file = @"C:\Windows\explorer.exe";
+            arg = "/select, " + listView1.SelectedItems[0].Text;
+            p.StartInfo.FileName = file;
+            p.StartInfo.Arguments = arg;
+            p.Start();
+        }
     }
 }
