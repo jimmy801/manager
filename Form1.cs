@@ -1103,6 +1103,12 @@ if ""%i"" NEQ """" (
         private void searchText_TextChanged(object sender, EventArgs e)
         {
             firstFoundI = firstFoundJ = -1;
+            if (new Regex(@"^[\s　\t\n]").IsMatch(searchText.Text) || new Regex(@"[\s　\t\n]$").IsMatch(searchText.Text))
+            {
+                searchText.Text = searchText.Text.Trim();
+                searchText.Focus();
+                searchText.SelectionStart = searchText.Text.Length;
+            }
         }
 
         private void AV管家_FormClosing(object sender, FormClosingEventArgs e)
