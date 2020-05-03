@@ -831,7 +831,8 @@ if ""%i"" NEQ """" (
 
             foreach (string s in value.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
-                string str = s.Substring(0, s.LastIndexOf('.')).Trim();
+                int dot = s.LastIndexOf('.');
+                string str = s.Substring(0, dot > 0? dot : s.Length).Trim();
                 string found = str;
                 for(int i = 0; i < listViewItem.Items.Count; i++)
                 {
