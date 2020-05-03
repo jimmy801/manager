@@ -12,6 +12,7 @@ namespace WindowsFormsApplication1
 {
     public partial class Form3 : Form
     {
+        bool control;
         public Form3(string str, string found)
         {
             InitializeComponent();
@@ -26,17 +27,24 @@ namespace WindowsFormsApplication1
                 listView1.Items[i].BackColor = color[Convert.ToInt32(founds[i])];
                 listView1.Items[i].ForeColor = Color.Black;
             }
+            control = false;
         }
 
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
             System.Diagnostics.Process p = new System.Diagnostics.Process();
-            string arg;
+            string arg = "";
             string file = @"C:\Windows\explorer.exe";
-            arg = "/select, " + listView1.SelectedItems[0].Text;
+            if (control) arg = "/select, ";
+            arg += listView1.SelectedItems[0].Text;
             p.StartInfo.FileName = file;
             p.StartInfo.Arguments = arg;
             p.Start();
+        }
+
+        private void control_press(object sender, KeyEventArgs e)
+        {
+            control = e.Control;
         }
     }
 }

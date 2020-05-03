@@ -48,6 +48,8 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
+            this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.control_press);
+            this.listView1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.control_press);
             // 
             // columnHeader1
             // 
