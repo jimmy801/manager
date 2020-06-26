@@ -697,7 +697,7 @@ if ""%i"" NEQ """" (
             for (int i = startI; interval > 0 ? i < endI : i >= endI; i += interval)
             {
                 for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
-                    if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(searchText.Text).Trim(new char[]{ ' ', '\t', '\n'}), StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(searchText.Text).Trim(new char[] { ' ', '\t', '\n' }), StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         if (!lastFound) { firstFoundI = i; firstFoundJ = j; }
                         else { lastI = i; lastJ = j; }
@@ -832,9 +832,9 @@ if ""%i"" NEQ """" (
             foreach (string s in value.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
                 int dot = s.LastIndexOf('.');
-                string str = s.Substring(0, dot > 0? dot : s.Length).Trim();
+                string str = s.Substring(0, dot > 0 ? dot : s.Length).Trim();
                 string found = str;
-                for(int i = 0; i < listViewItem.Items.Count; i++)
+                for (int i = 0; i < listViewItem.Items.Count; i++)
                 {
                     for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
                     {
@@ -892,13 +892,52 @@ if ""%i"" NEQ """" (
         {
             StringBuilder sb = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
+            HashSet<string> complete = new HashSet<string>();
             string f1, f2;
-            int pos = -1;
+            string p1, p2;
+            /*int pos = -1;*/
             bool add = false;
             int count = 0;
             for (int i = 1; i < listViewItem.Items.Count; i++)
             {
-                pos = pos < 0 ? i - 1 : pos;
+                f1 = listViewItem.Items[i].Text.Substring(0, listViewItem.Items[i].Text.LastIndexOf('.'));
+                p1 = listViewItem.Items[i].SubItems[2].Text + listViewItem.Items[i].SubItems[0].Text + '\t';
+                if (complete.Contains(p1))
+                    continue;
+                for (int j = 0; j < i; ++j)
+                {
+                    f2 = listViewItem.Items[j].Text.Substring(0, listViewItem.Items[j].Text.LastIndexOf('.'));
+                    if (f1.Contains(f2) || f2.Contains(f1))
+                    {
+                        p2 = listViewItem.Items[j].SubItems[2].Text + listViewItem.Items[j].SubItems[0].Text + '\t';
+                        if (add)
+                        {
+                            sb.Append(p2);
+                            complete.Add(p2);
+                            count++;
+                        }
+                        else
+                        {
+                            sb.Append(p1);
+                            sb.Append(p2);
+                            complete.Add(p1);
+                            complete.Add(p2);
+                            count += 2;
+                        }
+                        add = true;
+                    }
+                    else
+                    {
+                        if (add)
+                        {
+                            sb2.Append(count.ToString() + '\t');
+                            add = false;
+                        }
+                    }
+                }
+                /*pos = pos < 0 ? i - 1 : pos;
+                if (listViewItem.Items[pos].Text.Contains("MIUM-510") && listViewItem.Items[i].Text.Contains("MIUM-510"))
+                    ;
                 f1 = listViewItem.Items[pos].Text.Substring(0, listViewItem.Items[pos].Text.LastIndexOf('.'));
                 f2 = listViewItem.Items[i].Text.Substring(0, listViewItem.Items[i].Text.LastIndexOf('.'));
                 if (f1.Contains(f2) || f2.Contains(f1))
@@ -918,7 +957,7 @@ if ""%i"" NEQ """" (
                         add = false;
                     }
                     pos = -1;
-                }
+                }*/
             }
             if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).ShowDialog(this);
         }
