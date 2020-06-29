@@ -21,7 +21,8 @@ namespace WindowsFormsApplication1
         ListViewItemComparer sorter1 = new ListViewItemComparer();
         ListViewItemComparer sorter2 = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        string deskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_BLK_8T TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk";
+        string diskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_BLK_8T TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk";
+        string diskUUID = "2C09-1B0E 0C04-7BD4 B68A-6D73 D83B-7521 0C5C-0819 C870-5B24 8EED-8805 B0A2-4A76 2E59-1FAD A24D-F0F4 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0";
         bool over = false;
         bool getDataexc = false;
         bool lastIsFolder = true;
@@ -210,7 +211,7 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
 )
 )
 )
-)", deskNames)).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+)", diskUUID)).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             FcmdT = sw.ElapsedMilliseconds;
             string loc = "";
             bool b;
@@ -293,7 +294,7 @@ if ""%i"" NEQ """" (
 )
 )
 )
-)", deskNames, cmd)).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+)", diskUUID, cmd)).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             VcmdT = sw.ElapsedMilliseconds;
             string[] tmpstr;
             string actress = "";
