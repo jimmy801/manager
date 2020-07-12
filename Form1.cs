@@ -371,7 +371,7 @@ if ""%i"" NEQ """" (
                     try
                     {
                         tmpSerialNum = t.Substring(backDash);
-                        actressList.TryGetValue(tmpSerialNum.Substring(0, tmpSerialNum.IndexOf('.')), out actress);
+                        actressList.TryGetValue(tmpSerialNum.Substring(0, tmpSerialNum.IndexOf('.')).TrimEnd('C'), out actress);
                     }
                     catch { }
                 }
