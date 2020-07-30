@@ -67,7 +67,6 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
-            this.listView1.HideSelection = false;
             this.listView1.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
@@ -249,7 +248,6 @@
             this.listView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView2.FullRowSelect = true;
             this.listView2.GridLines = true;
-            this.listView2.HideSelection = false;
             this.listView2.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.listView2.Location = new System.Drawing.Point(0, 0);
             this.listView2.Name = "listView2";
@@ -311,6 +309,7 @@
             this.ClientSize = new System.Drawing.Size(535, 516);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.toolPanel);
+            this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(450, 298);
             this.Name = "AV管家";
             this.Text = "AV管家";
