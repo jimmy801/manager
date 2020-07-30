@@ -21,8 +21,8 @@ namespace WindowsFormsApplication1
         ListViewItemComparer sorter1 = new ListViewItemComparer();
         ListViewItemComparer sorter2 = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        string diskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_BLK_8T TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk";
-        string diskUUID = "2C09-1B0E 0C04-7BD4 B68A-6D73 D83B-7521 0C5C-0819 C870-5B24 8EED-8805 B0A2-4A76 2E59-1FAD A24D-F0F4 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0";
+        //string diskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_BLK_8T TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk Seagate_jp_8T";
+        string diskUUID = "2C09-1B0E 0C04-7BD4 B68A-6D73 D83B-7521 0C5C-0819 C870-5B24 8EED-8805 B0A2-4A76 2E59-1FAD A24D-F0F4 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0 1A5A-E56E";
         bool over = false;
         bool getDataexc = false;
         bool lastIsFolder = true;
@@ -201,13 +201,10 @@ namespace WindowsFormsApplication1
             //string[] tmp = File.ReadAllLines(desktop + @"\o");
             string[] tmp = CommandOutput(String.Format(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
-if exist %p:\ (
 if exist %p:\Data ( 
 for /f %i in ('dir %p: ^| findstr ""{0}""') do (
 if ""%i"" NEQ """" (
-cd /D %p:\Data 
-for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
-)
+for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo\ %p:\Data\%A
 )
 )
 )
@@ -285,12 +282,10 @@ for /F ""tokens=*"" %A in ('dir /ad/b') do @echo %~dpnxA
             string cmd = main_cmd + separate_pre + string.Join(separate_pre, videoTypes) + ignoreUnfind;
             string[] tmp = CommandOutput(String.Format(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do ( 
-if exist %p:\ ( 
 if exist %p:\Data\ (
 for /f %i in ('dir %p: ^| findstr ""{0}""') do ( 
 if ""%i"" NEQ """" ( 
 {1} 
-)
 )
 )
 )
@@ -889,14 +884,13 @@ if ""%i"" NEQ """" (
 
         }
 
-        private void findDuplicate()
+        private void findDeepDuplicate()
         {
             StringBuilder sb = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
             HashSet<string> complete = new HashSet<string>();
             string f1, f2;
             string p1, p2;
-            /*int pos = -1;*/
             bool add = false;
             int count = 0;
             for (int i = 1; i < listViewItem.Items.Count; i++)
@@ -936,9 +930,21 @@ if ""%i"" NEQ """" (
                         }
                     }
                 }
-                /*pos = pos < 0 ? i - 1 : pos;
-                if (listViewItem.Items[pos].Text.Contains("MIUM-510") && listViewItem.Items[i].Text.Contains("MIUM-510"))
-                    ;
+            }
+            if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).ShowDialog(this);
+        }
+
+        private void findDuplicate()
+        {
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sb2 = new StringBuilder();
+            string f1, f2;
+            int pos = -1;
+            bool add = false;
+            int count = 0;
+            for (int i = 1; i < listViewItem.Items.Count; i++)
+            {
+                pos = pos < 0 ? i - 1 : pos;
                 f1 = listViewItem.Items[pos].Text.Substring(0, listViewItem.Items[pos].Text.LastIndexOf('.'));
                 f2 = listViewItem.Items[i].Text.Substring(0, listViewItem.Items[i].Text.LastIndexOf('.'));
                 if (f1.Contains(f2) || f2.Contains(f1))
@@ -958,7 +964,7 @@ if ""%i"" NEQ """" (
                         add = false;
                     }
                     pos = -1;
-                }*/
+                }
             }
             if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).ShowDialog(this);
         }
@@ -968,7 +974,11 @@ if ""%i"" NEQ """" (
             if (Control.ModifierKeys == Keys.Shift) search(-1);
             else search(1);
             if (string.IsNullOrWhiteSpace(searchText.Text) && VideoR.Checked)
-                findDuplicate();
+            {
+                if(Control.ModifierKeys == Keys.Control) findDeepDuplicate();
+                else findDuplicate();
+            }
+                
         }
 
         private void Form1_Shown(object sender, EventArgs e)
