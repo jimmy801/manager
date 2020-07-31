@@ -204,7 +204,7 @@ for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 if exist %p:\Data ( 
 for /f %i in ('dir %p: ^| findstr ""{0}""') do (
 if ""%i"" NEQ """" (
-for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo\ %p:\Data\%A
+for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A
 )
 )
 )

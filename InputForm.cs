@@ -23,5 +23,33 @@ namespace WindowsFormsApplication1
         {
             form.value = textBox1.Text;
         }
+
+        private void textBox1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+
+        }
+
+        private void textBox1_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.UnicodeText, true))
+            {
+                var data = e.Data.GetData(DataFormats.UnicodeText, true);
+                if (data != null)
+                {
+                    if (data is string)
+                    {
+                        textBox1.Text = data as string; // done!
+                    }
+                }
+            }
+        }
     }
 }
