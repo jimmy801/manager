@@ -21,8 +21,8 @@ namespace WindowsFormsApplication1
         ListViewItemComparer sorter1 = new ListViewItemComparer();
         ListViewItemComparer sorter2 = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        //string diskNames = "TOSHIBA_white SP_blk TOSHIBA_red TOSHIBA_blk ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_BLK_8T TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk Seagate_jp_8T";
-        string diskUUID = "2C09-1B0E 0C04-7BD4 B68A-6D73 D83B-7521 0C5C-0819 C870-5B24 8EED-8805 B0A2-4A76 2E59-1FAD A24D-F0F4 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0 1A5A-E56E";
+        //string diskNames = "TOSHIBA_white SP_blk TOSHIBAEXT TOSHIBAEXT ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_8T_2 TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk Seagate_8T_1";
+        string diskUUID = "2C09-1B0E 0C04-7BD4 2C4E-6CA7 5225-CD70 0C5C-0819 C870-5B24 8EED-8805 B0A2-4A76 2E59-1FAD A24D-F0F4 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0 1A5A-E56E";
         bool over = false;
         bool getDataexc = false;
         bool lastIsFolder = true;
@@ -294,8 +294,7 @@ if ""%i"" NEQ """" (
             string[] tmpstr;
             string actress = "";
             string loc = "";
-            string[] actressLst = null;
-            string[] VRActressLst = null;
+            List<string> actressLst = new List<string>();
             string tmpSerialNum = "";
             int backDash = 0;
             byte n = 0;
@@ -303,13 +302,19 @@ if ""%i"" NEQ """" (
             {
                 try
                 {
-                    actressLst = File.ReadAllLines(string.Format(@"{0}:\Data\多人\人名.txt", i));
+                    actressLst.AddRange(File.ReadAllLines(string.Format(@"{0}:\Data\多人1\人名1.txt", i)));
                     n++;
                 }
                 catch { }
                 try
                 {
-                    VRActressLst = File.ReadAllLines(string.Format(@"{0}:\Data\VR\多人\人名.txt", i));
+                    actressLst.AddRange(File.ReadAllLines(string.Format(@"{0}:\Data\多人2\人名2.txt", i)));
+                    n++;
+                }
+                catch { }
+                try
+                {
+                    actressLst.AddRange(File.ReadAllLines(string.Format(@"{0}:\Data\VR\多人\人名.txt", i)));
                     n++;
                 }
                 catch { }
@@ -326,15 +331,6 @@ if ""%i"" NEQ """" (
             try
             {
                 foreach (var a in actressLst)
-                {
-                    try
-                    {
-                        tmpstr = a.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                        actressList.Add(tmpstr[0], tmpstr[1]);
-                    }
-                    catch { }
-                }
-                foreach (var a in VRActressLst)
                 {
                     try
                     {
@@ -361,7 +357,7 @@ if ""%i"" NEQ """" (
                         break;
                     }
                 }
-                if (loc.Contains(@"\多人\"))
+                if (loc.Contains(@"\多人1\") || loc.Contains(@"\多人2\"))
                 {
                     try
                     {
@@ -880,7 +876,7 @@ if ""%i"" NEQ """" (
                     pos = -1;
                 }
             }*/
-            if (sb.Length > 0) new Form3(sb.ToString(), sb2.ToString()).ShowDialog(this);
+            if (sb.Length > 0) new Form3(sb.ToString(), sb2.ToString()).Show();
 
         }
 
@@ -931,7 +927,7 @@ if ""%i"" NEQ """" (
                     }
                 }
             }
-            if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).ShowDialog(this);
+            if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).Show();
         }
 
         private void findDuplicate()
