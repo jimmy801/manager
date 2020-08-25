@@ -202,7 +202,7 @@ namespace WindowsFormsApplication1
             string[] tmp = CommandOutput(String.Format(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 if exist %p:\Data ( 
-for /f %i in ('dir %p: ^| findstr ""{0}""') do (
+for /f %i in ('vol %p: ^| findstr ""{0}""') do (
 if ""%i"" NEQ """" (
 for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A
 )
@@ -283,7 +283,7 @@ for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A
             string[] tmp = CommandOutput(String.Format(@"
 for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do ( 
 if exist %p:\Data\ (
-for /f %i in ('dir %p: ^| findstr ""{0}""') do ( 
+for /f %i in ('vol %p: ^| findstr ""{0}""') do ( 
 if ""%i"" NEQ """" ( 
 {1} 
 )
@@ -943,7 +943,7 @@ if ""%i"" NEQ """" (
                 pos = pos < 0 ? i - 1 : pos;
                 f1 = listViewItem.Items[pos].Text.Substring(0, listViewItem.Items[pos].Text.LastIndexOf('.'));
                 f2 = listViewItem.Items[i].Text.Substring(0, listViewItem.Items[i].Text.LastIndexOf('.'));
-                if (f1.Contains(f2) || f2.Contains(f1))
+                if ((f1.Contains(f2) || f2.Contains(f1)) && f1 != (f2 + 'C') && f2 != (f1 + 'C'))
                 {
                     if (pos == i - 1)
                         sb.Append(listViewItem.Items[pos].SubItems[2].Text + listViewItem.Items[pos].SubItems[0].Text + '\t');
@@ -962,7 +962,7 @@ if ""%i"" NEQ """" (
                     pos = -1;
                 }
             }
-            if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).ShowDialog(this);
+            if (sb.Length > 0) new Form2(sb.ToString(), sb2.ToString()).Show();
         }
 
         private void searchBTN_Click(object sender, EventArgs e)
