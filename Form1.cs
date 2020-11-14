@@ -21,8 +21,8 @@ namespace WindowsFormsApplication1
         ListViewItemComparer sorter1 = new ListViewItemComparer();
         ListViewItemComparer sorter2 = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        //string diskNames = "TOSHIBA_white ADATA_TC TOSHIBAEXT TOSHIBAEXT ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue TOSHIBA_TBLK Seagate_8T_2 TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk Seagate_8T_1";
-        string diskUUID = "2C09-1B0E E27B-DFE5 2C4E-6CA7 5225-CD70 0C5C-0819 C870-5B24 8EED-8805 B0A2-4A76 2E59-1FAD A24D-F0F4 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0 1A5A-E56E";
+        //string diskNames = "TOSHIBA_white ADATA_TC TOSHIBAEXT TOSHIBAEXT ADATA_blue Seagate_4T_red Transcend_green Transcend_blk TOSHIBA_blue Seagate_5T Seagate_8T_2 TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk Seagate_8T_1";
+        string diskUUID = "2C09-1B0E E27B-DFE5 2C4E-6CA7 5225-CD70 0C5C-0819 C870-5B24 8EED-8805 B0A2-4A76 2E59-1FAD 9A8D-D6C1 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0 1A5A-E56E";
         bool over = false;
         bool getDataexc = false;
         bool lastIsFolder = true;
