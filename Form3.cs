@@ -98,11 +98,11 @@ namespace WindowsFormsApplication1
                         DialogResult dialogResult = MessageBox.Show(String.Format("Delete {0}?", file), "Delete file", MessageBoxButtons.YesNo);
                         if (dialogResult == DialogResult.Yes)
                         {
-                            if (Directory.Exists(file))
+                            if (File.Exists(file))
                             {
                                 try
                                 {
-                                    Directory.Delete(file, true);
+                                    File.Delete(file);
                                     listView1.Items.Remove(listView1.SelectedItems[0]);
                                 }
 
