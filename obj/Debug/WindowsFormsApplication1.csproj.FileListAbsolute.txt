@@ -21,3 +21,4 @@ D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.pdb
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.csprojAssemblyReference.cache
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.InputForm.resources
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.Form3.resources
+D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.rename_form.resources

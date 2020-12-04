@@ -971,10 +971,10 @@ if ""%i"" NEQ """" (
             else search(1);
             if (string.IsNullOrWhiteSpace(searchText.Text) && VideoR.Checked)
             {
-                if(Control.ModifierKeys == Keys.Control) findDeepDuplicate();
+                if (Control.ModifierKeys == Keys.Control) findDeepDuplicate();
                 else findDuplicate();
             }
-                
+
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -995,23 +995,35 @@ if ""%i"" NEQ """" (
             t.Tick += new EventHandler(t_Tick);
         }
 
-        private void waitForExplorer(string selected)
+        [DllImport("shell32.dll", ExactSpelling = true)]
+        private static extern void ILFree(IntPtr pidlList);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+        private static extern IntPtr ILCreateFromPathW(string pszPath);
+
+        [DllImport("shell32.dll", ExactSpelling = true)]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlList, uint cild, IntPtr children, uint dwFlags);
+
+        public static void ExplorerFile(string filePath)
         {
-            Process p = new Process();
-            string arg;
-            string file = @"C:\Windows\explorer.exe";
-            arg = "/select, " + selected;
-            p.StartInfo.FileName = file;
-            p.StartInfo.Arguments = arg;
-            p.Start();
-            p.WaitForExit();
-            p.Close();
+            if (!File.Exists(filePath) && !Directory.Exists(filePath))
+                return;
+
+            IntPtr pidlList = ILCreateFromPathW(filePath);
+            if (pidlList == IntPtr.Zero) return;
+            try
+            {
+                Marshal.ThrowExceptionForHR(SHOpenFolderAndSelectItems(pidlList, 0, IntPtr.Zero, 0));
+            }
+            finally
+            {
+                ILFree(pidlList);
+            }
         }
 
         private void openFile()
         {
-            string selected = "";
-            string fileName = "";
+            string file = "";
             bool b = false;
             for (int i = 0; i < listViewItem.SelectedItems.Count; ++i)
             {
@@ -1019,28 +1031,36 @@ if ""%i"" NEQ """" (
                 {
                     if (listViewItem.Items[j] == listViewItem.SelectedItems[i])
                     {
-                        if (listViewItem.Items[j].SubItems.Count == 2)
-                            selected = "\"" + listViewItem.Items[j].SubItems[1].Text;
-                        else selected = "\"" + listViewItem.Items[j].SubItems[2].Text;
-                        fileName = listViewItem.SelectedItems[i].Text + "\"";
                         b = true;
-                        if (listViewItem.Items[j].SubItems.Count == 2) setDetail("資料夾開啟中...", int.MaxValue / 10);
-                        else setDetail("檔案開啟中...", int.MaxValue / 10);
+                        if (listViewItem.Items[j].SubItems.Count == 2)
+                        {
+                            file = String.Format("\"{0}{1}\"", listViewItem.Items[j].SubItems[1].Text, listViewItem.SelectedItems[i].Text);
+                            Process p = new Process();
+                            p.StartInfo.FileName = @"C:\Windows\explorer.exe";
+                            p.StartInfo.Arguments = file;
+                            p.Start();
+                            p.WaitForExit();
+                            p.Close();
+                            p.Dispose();
+                            setDetail("");
+                            setDetail("資料夾開啟中...");
+                        }
+                        else
+                        {
+                            file = String.Format("\"{0}{1}\"", listViewItem.Items[j].SubItems[2].Text, listViewItem.SelectedItems[i].Text);
+                            Process p = new Process();
+                            p.StartInfo.FileName = file;
+                            p.Start();
+                            //p.WaitForExit();
+                            p.Close();
+                            p.Dispose();
+                            setDetail("檔案開啟中...");
+                        }
                         break;
                     }
                 }
                 if (b) break;
             }
-            Process p = new Process();
-            string arg;
-            string file = @"C:\Windows\explorer.exe";
-            arg = selected + fileName;
-            p.StartInfo.FileName = file;
-            p.StartInfo.Arguments = arg;
-            p.Start();
-            p.WaitForExit();
-            p.Close();
-            p.Dispose();
             setDetail("");
         }
 
@@ -1059,7 +1079,8 @@ if ""%i"" NEQ """" (
                             selected = listViewItem.Items[j].SubItems[1].Text;
                         else selected = listViewItem.Items[j].SubItems[2].Text;
                         fileName = listViewItem.SelectedItems[i].Text;
-                        setDetail("資料夾開啟中...", 1.5);
+                        ExplorerFile(selected + fileName);
+                        setDetail("資料夾開啟中...");
                         //new Thread(() => waitForExplorer(selected + fileName)).Start();
                         b = true;
                         break;
@@ -1067,18 +1088,8 @@ if ""%i"" NEQ """" (
                 }
                 if (b) break;
             }
+            setDetail("");
             if (!b) return;
-            //Process.Start("explorer.exe", "/select, " + selected + fileName);
-            Process p = new Process();
-            string arg;
-            string file = @"C:\Windows\explorer.exe";
-            arg = "/select, " + selected + fileName;
-            p.StartInfo.FileName = file;
-            p.StartInfo.Arguments = arg;
-            p.Start();
-            p.WaitForExit();
-            p.Close();
-            p.Dispose();
         }
 
         private void openWithFileManagerToolStripMenuItem_Click(object sender, EventArgs e)

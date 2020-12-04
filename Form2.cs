@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -32,15 +34,37 @@ namespace WindowsFormsApplication1
             }
         }
 
+        [DllImport("shell32.dll", ExactSpelling = true)]
+        private static extern void ILFree(IntPtr pidlList);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+        private static extern IntPtr ILCreateFromPathW(string pszPath);
+
+        [DllImport("shell32.dll", ExactSpelling = true)]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlList, uint cild, IntPtr children, uint dwFlags);
+
+        public static void ExplorerFile(string filePath)
+        {
+            if (!File.Exists(filePath) && !Directory.Exists(filePath))
+                return;
+
+            IntPtr pidlList = ILCreateFromPathW(filePath);
+            if (pidlList == IntPtr.Zero) return;
+            try
+            {
+                Marshal.ThrowExceptionForHR(SHOpenFolderAndSelectItems(pidlList, 0, IntPtr.Zero, 0));
+            }
+            finally
+            {
+                ILFree(pidlList);
+            }
+        }
+
+
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
-            System.Diagnostics.Process p = new System.Diagnostics.Process();
-            string arg;
-            string file = @"C:\Windows\explorer.exe";
-            arg = "/select, " + listView1.SelectedItems[0].Text;
-            p.StartInfo.FileName = file;
-            p.StartInfo.Arguments = arg;
-            p.Start();
+
+            ExplorerFile(listView1.SelectedItems[0].Text);
         }
     }
 }
