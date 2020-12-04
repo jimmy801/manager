@@ -33,9 +33,9 @@ namespace WindowsFormsApplication1
 
         private void rename()
         {
-            if (Directory.Exists(ori_file))
+            if (File.Exists(ori_file))
             {
-                new_name = folder_lbl.Text + name_txtbx.Text;
+                new_name = folder_lbl.Text + name_txtbx.Text + ext_lbl.Text;
                 File.Move(ori_file, new_name);
             }
         }

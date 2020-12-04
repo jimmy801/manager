@@ -90,7 +90,7 @@ namespace WindowsFormsApplication1
                     case Keys.F2:
                         using(var form = new rename_form(file))
                         {
-                            if(form.ShowDialog() != DialogResult.OK) return;
+                            if(form.ShowDialog() != DialogResult.Yes) return;
                             listView1.SelectedItems[0].Text = form.new_name;
                         }
                         break;
