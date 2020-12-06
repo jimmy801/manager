@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApplication1
 {
-    public partial class AV管家 : Form
+    public partial class Manager : Form
     {
         System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
         int tc = 0;
@@ -46,7 +46,7 @@ namespace WindowsFormsApplication1
         [DllImport("Kernel32")]
         public static extern void FreeConsole();
 
-        public AV管家()
+        public Manager()
         {
             this.Icon = Properties.Resources.favicon_20181126051103728;
             InitializeComponent();

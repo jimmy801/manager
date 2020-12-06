@@ -31,10 +31,10 @@
             this.rename_btn = new System.Windows.Forms.Button();
             this.cancel_btn = new System.Windows.Forms.Button();
             this.name_txtbx = new System.Windows.Forms.TextBox();
-            this.ext_lbl = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.folder_lbl = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.folder_txt = new System.Windows.Forms.TextBox();
+            this.ext_txt = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -69,22 +69,11 @@
             // name_txtbx
             // 
             this.name_txtbx.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.name_txtbx.Location = new System.Drawing.Point(9, 3);
+            this.name_txtbx.Location = new System.Drawing.Point(109, 3);
             this.name_txtbx.Name = "name_txtbx";
-            this.name_txtbx.Size = new System.Drawing.Size(508, 22);
+            this.name_txtbx.Size = new System.Drawing.Size(308, 22);
             this.name_txtbx.TabIndex = 2;
             this.name_txtbx.KeyDown += new System.Windows.Forms.KeyEventHandler(this.name_txtbx_KeyDown);
-            // 
-            // ext_lbl
-            // 
-            this.ext_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ext_lbl.AutoSize = true;
-            this.ext_lbl.Location = new System.Drawing.Point(523, 0);
-            this.ext_lbl.Name = "ext_lbl";
-            this.ext_lbl.Size = new System.Drawing.Size(1, 32);
-            this.ext_lbl.TabIndex = 3;
             // 
             // tableLayoutPanel1
             // 
@@ -92,9 +81,9 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.ext_lbl, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.folder_txt, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.name_txtbx, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.folder_lbl, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.ext_txt, 2, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -103,17 +92,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 32);
             this.tableLayoutPanel1.TabIndex = 4;
-            // 
-            // folder_lbl
-            // 
-            this.folder_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.folder_lbl.AutoSize = true;
-            this.folder_lbl.Location = new System.Drawing.Point(3, 0);
-            this.folder_lbl.Name = "folder_lbl";
-            this.folder_lbl.Size = new System.Drawing.Size(1, 32);
-            this.folder_lbl.TabIndex = 4;
             // 
             // tableLayoutPanel2
             // 
@@ -130,6 +108,24 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(526, 35);
             this.tableLayoutPanel2.TabIndex = 5;
+            // 
+            // folder_txt
+            // 
+            this.folder_txt.Location = new System.Drawing.Point(3, 3);
+            this.folder_txt.Name = "folder_txt";
+            this.folder_txt.ReadOnly = true;
+            this.folder_txt.Size = new System.Drawing.Size(100, 22);
+            this.folder_txt.TabIndex = 7;
+            this.folder_txt.TabStop = false;
+            // 
+            // ext_txt
+            // 
+            this.ext_txt.Location = new System.Drawing.Point(423, 3);
+            this.ext_txt.Name = "ext_txt";
+            this.ext_txt.ReadOnly = true;
+            this.ext_txt.Size = new System.Drawing.Size(100, 22);
+            this.ext_txt.TabIndex = 8;
+            this.ext_txt.TabStop = false;
             // 
             // rename_form
             // 
@@ -155,9 +151,9 @@
         private System.Windows.Forms.Button rename_btn;
         private System.Windows.Forms.Button cancel_btn;
         private System.Windows.Forms.TextBox name_txtbx;
-        private System.Windows.Forms.Label ext_lbl;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Label folder_lbl;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TextBox folder_txt;
+        private System.Windows.Forms.TextBox ext_txt;
     }
 }

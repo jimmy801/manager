@@ -12,8 +12,8 @@ namespace WindowsFormsApplication1
 {
     public partial class InputForm : Form
     {
-        AV管家 form;
-        public InputForm(AV管家 form)
+        Manager form;
+        public InputForm(Manager form)
         {
             InitializeComponent();
             this.form = form;

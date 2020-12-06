@@ -18,10 +18,12 @@ namespace WindowsFormsApplication1
         public rename_form(string name)
         {
             InitializeComponent();
+            ext_txt.TextChanged += txtContents_TextChanged;
+            folder_txt.TextChanged += txtContents_TextChanged;
             ori_file = name;
-            ext_lbl.Text = name.Substring(name.LastIndexOf('.'));
+            ext_txt.Text = name.Substring(name.LastIndexOf('.'));
             int bk_slash = name.LastIndexOf('\\');
-            folder_lbl.Text = name.Substring(0, bk_slash + 1);
+            folder_txt.Text = name.Substring(0, bk_slash + 1);
             name_txtbx.Text = name.Substring(bk_slash + 1, name.LastIndexOf('.') - bk_slash - 1);
             name_txtbx.SelectAll();
         }
@@ -35,9 +37,25 @@ namespace WindowsFormsApplication1
         {
             if (File.Exists(ori_file))
             {
-                new_name = folder_lbl.Text + name_txtbx.Text + ext_lbl.Text;
-                File.Move(ori_file, new_name);
+                new_name = folder_txt.Text + name_txtbx.Text + ext_txt.Text;
+                if(new_name != ori_file)
+                    File.Move(ori_file, new_name);
             }
+        }
+
+        private void txtContents_TextChanged(object sender, EventArgs e)
+        {
+            AutoSizeTextBox(sender as TextBox);
+        }
+
+        // Make the TextBox fit its contents.
+        private void AutoSizeTextBox(TextBox txtbx)
+        {
+            int left_margin = txtbx.Margin.Left;
+            int top_margin = txtbx.Margin.Top;
+            Size size = TextRenderer.MeasureText(txtbx.Text, txtbx.Font);
+            txtbx.ClientSize =
+                new Size(size.Width + left_margin, size.Height + top_margin);
         }
 
         private void name_txtbx_KeyDown(object sender, KeyEventArgs e)
@@ -45,10 +63,10 @@ namespace WindowsFormsApplication1
             switch (e.KeyCode)
             {
                 case Keys.Escape:
-                    this.Close();
+                    cancel_btn.PerformClick();
                     break;
                 case Keys.Enter:
-                    rename();
+                    rename_btn.PerformClick();
                     break;
                 default:
                     break;
