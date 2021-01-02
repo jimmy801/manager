@@ -77,10 +77,8 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
             this.listView1.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
             this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
-            this.listView1.Leave += new System.EventHandler(this.listView_Leave);
             // 
             // contextMenuStrip1
             // 
@@ -259,10 +257,8 @@
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.View = System.Windows.Forms.View.Details;
             this.listView2.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView_ColumnClick);
-            this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
             this.listView2.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
             this.listView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
-            this.listView2.Leave += new System.EventHandler(this.listView_Leave);
             // 
             // label1
             // 
@@ -315,7 +311,6 @@
             this.MinimumSize = new System.Drawing.Size(450, 298);
             this.Name = "Manager";
             this.Text = "Manager";
-            this.Deactivate += new System.EventHandler(this.Form1_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AV管家_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.Resize += new System.EventHandler(this.Form1_Resize);

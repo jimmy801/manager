@@ -50,6 +50,12 @@ namespace WindowsFormsApplication1
         {
             this.Icon = Properties.Resources.favicon_20181126051103728;
             InitializeComponent();
+            listView1.OwnerDraw = true;
+            listView2.OwnerDraw = true;
+            listView1.DrawSubItem += ListView_DrawSubItem;
+            listView1.DrawColumnHeader += ListView_DrawColumnHeader;
+            listView2.DrawSubItem += ListView_DrawSubItem;
+            listView2.DrawColumnHeader += ListView_DrawColumnHeader;
             listView1.BringToFront();
             label1.BringToFront();
             pictureBox1.BringToFront();
@@ -57,6 +63,40 @@ namespace WindowsFormsApplication1
             lastSelect = lastFSelect;
             this.ShowIcon = true;
             statusStrip1.Renderer = new CustomRenderer();
+        }
+
+        private void ListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
+            e.DrawDefault = true;
+        }
+
+        private void ListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        {
+            if (e.Item.Selected)
+            {
+                e.Graphics.FillRectangle(new SolidBrush(SystemColors.Highlight), e.SubItem.Bounds);
+
+                //add a 2 pixel buffer the match default behavior
+                Rectangle rec = new Rectangle(e.Bounds.X + 2, e.Bounds.Y + 2, e.Bounds.Width - 4, e.Bounds.Height - 4);
+
+                //TODO  Confirm combination of TextFormatFlags.EndEllipsis and TextFormatFlags.ExpandTabs works on all systems.  MSDN claims they're exclusive but on Win7-64 they work.
+                TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.EndEllipsis | TextFormatFlags.ExpandTabs | TextFormatFlags.SingleLine;
+
+                //If a different tabstop than the default is needed, will have to p/invoke DrawTextEx from win32.
+                TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.Item.ListView.Font, rec, Color.White, flags);
+            }
+            else
+            {
+                e.DrawBackground();
+                //add a 2 pixel buffer the match default behavior
+                Rectangle rec = new Rectangle(e.Bounds.X + 2, e.Bounds.Y + 2, e.Bounds.Width - 4, e.Bounds.Height - 4);
+
+                //TODO  Confirm combination of TextFormatFlags.EndEllipsis and TextFormatFlags.ExpandTabs works on all systems.  MSDN claims they're exclusive but on Win7-64 they work.
+                TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.EndEllipsis | TextFormatFlags.ExpandTabs | TextFormatFlags.SingleLine;
+
+                //If a different tabstop than the default is needed, will have to p/invoke DrawTextEx from win32.
+                TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.Item.ListView.Font, rec, Color.Black, flags);
+            }
         }
 
         ///<summary>
@@ -117,10 +157,10 @@ namespace WindowsFormsApplication1
 
         private void setListViewSize()
         {
-            int y = 28;
+            int x = 20;
             int div = 2;
             if (!FolderR.Checked) div = 3;
-            int lstW = (listViewItem.Width - y) / div - 3;
+            int lstW = (listViewItem.Width - x) / div;
             for (int i = 0; i < listViewItem.Columns.Count; ++i)
                 listViewItem.Columns[i].Width = lstW;
         }
@@ -140,39 +180,21 @@ namespace WindowsFormsApplication1
         {
             for (int i = 0; i < listViewItem.Items.Count; ++i)
             {
-                if (i % 2 == 0) listViewItem.Items[i].BackColor = Color.WhiteSmoke;
-                else listViewItem.Items[i].BackColor = Color.Gainsboro;
-                listViewItem.Items[i].ForeColor = Color.Black;
-            }
-        }
-
-        private void setOnFocusColor()
-        {
-            cancelOnFocusSelect();
-            for (int i = 0; i < listViewItem.SelectedItems.Count; ++i)
-            {
-                listViewItem.SelectedItems[i].BackColor = SystemColors.Highlight;
-                listViewItem.SelectedItems[i].ForeColor = Color.White;
-            }
-        }
-
-        private void cancelOnFocusSelect()
-        {
-            try
-            {
-                foreach (var i in lastSelect)
+                if (i % 2 == 0)
                 {
-                    if (i % 2 == 0) listViewItem.Items[i].BackColor = Color.WhiteSmoke;
-                    else listViewItem.Items[i].BackColor = Color.Gainsboro;
-                    listViewItem.Items[i].ForeColor = Color.Black;
+                    listViewItem.Items[i].BackColor = Color.WhiteSmoke;
+                    for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
+                        listViewItem.Items[i].SubItems[j].BackColor = Color.WhiteSmoke;
                 }
-            }
-            catch { }
-            finally
-            {
-                lastSelect.Clear();
-                for (int i = 0; i < listViewItem.SelectedItems.Count; ++i)
-                    lastSelect.Add(listViewItem.SelectedItems[i].Index);
+                else
+                {
+                    listViewItem.Items[i].BackColor = Color.Gainsboro;
+                    for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
+                        listViewItem.Items[i].SubItems[j].BackColor = Color.Gainsboro;
+                }
+                listViewItem.Items[i].ForeColor = Color.Black;
+                for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
+                    listViewItem.Items[i].SubItems[j].ForeColor = Color.Black;
             }
         }
 
@@ -180,8 +202,7 @@ namespace WindowsFormsApplication1
         {
             for (int i = 0; i < lastSelect.Count; ++i)
             {
-                listViewItem.Items[lastSelect[i]].BackColor = SystemColors.Highlight;
-                listViewItem.Items[lastSelect[i]].ForeColor = Color.White;
+                listViewItem.Items[lastSelect[i]].Selected = true;
             }
         }
 
@@ -221,7 +242,9 @@ for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A
                     foreach (var f in filter)
                         if (t.Contains(f)) { b = true; break; }
                     if (!b)
+                    {
                         aryF.Add(new ListViewItem(new string[] { t.Substring(t.LastIndexOf("\\") + 1), loc }));
+                    }
                 }
             }
             sw.Stop();
@@ -818,13 +841,17 @@ if ""%i"" NEQ """" (
         private void multiFind()
         {
             if (new InputForm(this).ShowDialog() == DialogResult.Cancel) return;
-            StringBuilder sb = new StringBuilder();
-            StringBuilder sb2 = new StringBuilder();
+            StringBuilder tgt_sb = new StringBuilder();
+            StringBuilder fnd_sb = new StringBuilder();
+            StringBuilder clr_sb = new StringBuilder();
 
             foreach (string s in value.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
-                int dot = s.LastIndexOf('.');
-                string str = s.Substring(0, dot > 0 ? dot : s.Length).Trim();
+                int backSlash = s.LastIndexOf('\\');
+                string str = s.Substring(backSlash > 0 ? backSlash + 1 : 0);
+                int dot = str.LastIndexOf('.');
+                str = str.Substring(0, dot > 0 ? dot : str.Length).Trim();
+                str = str.TrimStart("1234567890".ToCharArray());
                 string found = str;
                 for (int i = 0; i < listViewItem.Items.Count; i++)
                 {
@@ -840,16 +867,17 @@ if ""%i"" NEQ """" (
                     }
                     if (found != str) break;
                 }
+                tgt_sb.Append(s.Trim() + '\t');
                 //System.Console.WriteLine(found);
                 if (found == str)
                 {
-                    sb.Append(found + '\t');
-                    sb2.Append("0\t");
+                    fnd_sb.Append(found + '\t');
+                    clr_sb.Append("0\t");
                 }
                 else
                 {
-                    sb.Append(found + '\t');
-                    sb2.Append("1\t");
+                    fnd_sb.Append(found + '\t');
+                    clr_sb.Append("1\t");
                 }
             }
             /*for (int i = 1; i < listViewItem.Items.Count; i++)
@@ -876,7 +904,7 @@ if ""%i"" NEQ """" (
                     pos = -1;
                 }
             }*/
-            if (sb.Length > 0) new Form3(sb.ToString(), sb2.ToString()).Show();
+            new Form3(tgt_sb.ToString(), fnd_sb.ToString(), clr_sb.ToString()).Show();
 
         }
 
@@ -1097,12 +1125,6 @@ if ""%i"" NEQ """" (
             openFolder();
         }
 
-        private void listView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!listViewItem.Focused) setOnFocusColor();
-            else cancelOnFocusSelect();
-        }
-
         private void listView_DoubleClick(object sender, EventArgs e)
         {
             if (Form.ModifierKeys == Keys.Alt) openFile();
@@ -1189,16 +1211,6 @@ if ""%i"" NEQ """" (
         private void textBox1_DoubleClick(object sender, EventArgs e)
         {
             searchText.SelectAll();
-        }
-
-        private void Form1_Deactivate(object sender, EventArgs e)
-        {
-            setOnFocusColor();
-        }
-
-        private void listView_Leave(object sender, EventArgs e)
-        {
-            setOnFocusColor();
         }
 
     }

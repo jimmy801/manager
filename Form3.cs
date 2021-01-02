@@ -15,22 +15,24 @@ namespace WindowsFormsApplication1
 {
     public partial class Form3 : Form
     {
-        bool control;
-        public Form3(string str, string found)
+        public Form3(string tgt, string fnd, string found)
         {
             InitializeComponent();
-            List<ListViewItem> ary = new List<ListViewItem>();
-            foreach (var s in str.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                ary.Add(new ListViewItem(s));
-            listView1.Items.AddRange(ary.ToArray());
+            string[] tgt_ary = tgt.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] fnd_ary = fnd.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < tgt_ary.Length; ++i)
+            {
+                dataGridView1.Rows.Add(tgt_ary[i], fnd_ary[i]);
+            }
             string[] founds = found.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             Color[] color = { Color.WhiteSmoke, Color.Gainsboro };
-            for (int i = 0; i < listView1.Items.Count; ++i)
+            for (int i = 0; i < founds.Length; ++i)
             {
-                listView1.Items[i].BackColor = color[Convert.ToInt32(founds[i])];
-                listView1.Items[i].ForeColor = Color.Black;
+                dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
+                dataGridView1.Rows[i].DefaultCellStyle.BackColor = color[Convert.ToInt32(founds[i])];
             }
-            control = false;
+            //for (int i = 1; i < dataGridView1.ColumnCount; ++i)
+            //    dataGridView1.Columns[i].Width = this.Width / dataGridView1.ColumnCount;
         }
 
         [DllImport("shell32.dll", ExactSpelling = true)]
@@ -59,39 +61,39 @@ namespace WindowsFormsApplication1
             }
         }
 
-
-        private void listView1_DoubleClick(object sender, EventArgs e)
+        private void dataGridView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if(listView1.SelectedItems.Count > 0)
+            if(dataGridView1.SelectedCells.Count == 1)
             {
-                if (control)
+                if (Form.ModifierKeys == Keys.Control)
                 {
-                    ExplorerFile(listView1.SelectedItems[0].Text);
+                    System.Console.WriteLine(dataGridView1.SelectedCells[0].Value.ToString());
+                    ExplorerFile(dataGridView1.SelectedCells[0].Value.ToString());
                 }
                 else
                 {
                     Process p = new Process();
-                    p.StartInfo.FileName = listView1.SelectedItems[0].Text;
+                    p.StartInfo.FileName = dataGridView1.SelectedCells[0].Value.ToString();
                     p.Start();
                     p.Close();
                     p.Dispose();
                 }
             }
+
         }
 
-        private void listView1_Key(object sender, KeyEventArgs e)
+        private void dataGridView1_Key(object sender, KeyEventArgs e)
         {
-            control = e.Control;
-            if(listView1.SelectedItems.Count == 1)
+            if (dataGridView1.SelectedCells.Count == 1)
             {
-                string file = listView1.SelectedItems[0].Text;
+                string file = dataGridView1.SelectedCells[0].Value.ToString();
                 switch (e.KeyCode)
                 {
                     case Keys.F2:
-                        using(var form = new rename_form(file))
+                        using (var form = new rename_form(file))
                         {
-                            if(form.ShowDialog() != DialogResult.Yes) return;
-                            listView1.SelectedItems[0].Text = form.new_name;
+                            if (form.ShowDialog() != DialogResult.Yes) return;
+                            dataGridView1.SelectedCells[0].Value = form.new_name;
                         }
                         break;
                     case Keys.Delete:
@@ -103,7 +105,7 @@ namespace WindowsFormsApplication1
                                 try
                                 {
                                     File.Delete(file);
-                                    listView1.Items.Remove(listView1.SelectedItems[0]);
+                                    dataGridView1.Rows.RemoveAt(dataGridView1.SelectedCells[0].RowIndex);
                                 }
 
                                 catch (IOException ex)
@@ -118,5 +120,6 @@ namespace WindowsFormsApplication1
                 }
             }
         }
+
     }
 }
