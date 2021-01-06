@@ -63,12 +63,16 @@ namespace WindowsFormsApplication1
 
         private void dataGridView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if(dataGridView1.SelectedCells.Count == 1)
+            if (dataGridView1.SelectedCells.Count == 1)
             {
+                string path = dataGridView1.SelectedCells[0].Value.ToString();
+                if (!File.Exists(path) && !Directory.Exists(path))
+                    return;
+
                 if (Form.ModifierKeys == Keys.Control)
                 {
-                    System.Console.WriteLine(dataGridView1.SelectedCells[0].Value.ToString());
-                    ExplorerFile(dataGridView1.SelectedCells[0].Value.ToString());
+                    //System.Console.WriteLine(dataGridView1.SelectedCells[0].Value.ToString());
+                    ExplorerFile(path);
                 }
                 else
                 {

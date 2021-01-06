@@ -852,13 +852,14 @@ if ""%i"" NEQ """" (
                 int dot = str.LastIndexOf('.');
                 str = str.Substring(0, dot > 0 ? dot : str.Length).Trim();
                 str = str.TrimStart("1234567890".ToCharArray());
+                str = ToNarrow(str).Trim(new char[] { ' ', '\t', '\n' });
                 string found = str;
                 for (int i = 0; i < listViewItem.Items.Count; i++)
                 {
                     for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
                     {
                         //System.Console.WriteLine(listViewItem.Items[i].SubItems[j].Text);
-                        if (listViewItem.Items[i].SubItems[j].Text.IndexOf(ToNarrow(str).Trim(new char[] { ' ', '\t', '\n' }), StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (listViewItem.Items[i].SubItems[j].Text.IndexOf(str, StringComparison.OrdinalIgnoreCase) >= 0)
                         {
                             found = listViewItem.Items[i].SubItems[2].Text + listViewItem.Items[i].SubItems[0].Text;
                             //System.Console.WriteLine("found");
