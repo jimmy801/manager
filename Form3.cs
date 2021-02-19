@@ -31,6 +31,7 @@ namespace WindowsFormsApplication1
                 dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
                 dataGridView1.Rows[i].DefaultCellStyle.BackColor = color[Convert.ToInt32(founds[i])];
             }
+            dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Ascending);
             //for (int i = 1; i < dataGridView1.ColumnCount; ++i)
             //    dataGridView1.Columns[i].Width = this.Width / dataGridView1.ColumnCount;
         }
