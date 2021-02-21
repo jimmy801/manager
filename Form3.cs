@@ -47,8 +47,12 @@ namespace WindowsFormsApplication1
 
         public static void ExplorerFile(string filePath)
         {
+            Console.WriteLine("try open" + filePath);
             if (!File.Exists(filePath) && !Directory.Exists(filePath))
+            {
+                MessageBox.Show(String.Format("Can not open {0}", filePath), "Open error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
 
             IntPtr pidlList = ILCreateFromPathW(filePath);
             if (pidlList == IntPtr.Zero) return;
@@ -62,13 +66,24 @@ namespace WindowsFormsApplication1
             }
         }
 
+        private void openFile(string path)
+        {
+            if (!File.Exists(path)){
+                MessageBox.Show(String.Format("Can not open {0}", path), "Open error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Process p = new Process();
+            p.StartInfo.FileName = dataGridView1.SelectedCells[0].Value.ToString();
+            p.Start();
+            p.Close();
+            p.Dispose();
+        }
+
         private void dataGridView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (dataGridView1.SelectedCells.Count == 1)
             {
                 string path = dataGridView1.SelectedCells[0].Value.ToString();
-                if (!File.Exists(path) && !Directory.Exists(path))
-                    return;
 
                 if (Form.ModifierKeys == Keys.Control)
                 {
@@ -77,11 +92,7 @@ namespace WindowsFormsApplication1
                 }
                 else
                 {
-                    Process p = new Process();
-                    p.StartInfo.FileName = dataGridView1.SelectedCells[0].Value.ToString();
-                    p.Start();
-                    p.Close();
-                    p.Dispose();
+                    openFile(path);
                 }
             }
 
@@ -99,6 +110,22 @@ namespace WindowsFormsApplication1
                         {
                             if (form.ShowDialog() != DialogResult.Yes) return;
                             dataGridView1.SelectedCells[0].Value = form.new_name;
+                        }
+                        break;
+                    case Keys.C:
+                        if (Control.ModifierKeys == Keys.Control)
+                        {
+                            Clipboard.SetText(file);
+                        }
+                        break;
+                    case Keys.O:
+                        if (Control.ModifierKeys == Keys.Control)
+                        {
+                            ExplorerFile(file);
+                        }
+                        else if(Control.ModifierKeys == Keys.Alt)
+                        {
+                            openFile(file);
                         }
                         break;
                     case Keys.Delete:
