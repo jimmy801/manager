@@ -861,7 +861,7 @@ if ""%i"" NEQ """" (
                         //System.Console.WriteLine(listViewItem.Items[i].SubItems[j].Text);
                         if (listViewItem.Items[i].SubItems[j].Text.IndexOf(str, StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            found = listViewItem.Items[i].SubItems[2].Text + listViewItem.Items[i].SubItems[0].Text;
+                            found = listViewItem.Items[i].SubItems[listViewItem.Items[i].SubItems.Count - 1].Text + listViewItem.Items[i].SubItems[0].Text;
                             //System.Console.WriteLine("found");
                             break;
                         }
