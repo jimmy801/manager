@@ -28,6 +28,7 @@ namespace WindowsFormsApplication1
         bool lastIsFolder = true;
         bool ValreadyRun = false;
         bool FalreadyRun = false;
+        bool firstSetColor = false;
         long VcmdT, VtotalT, FcmdT, FtotalT;
         public string value;
         List<int> lastSelect;
@@ -52,10 +53,6 @@ namespace WindowsFormsApplication1
             InitializeComponent();
             listView1.OwnerDraw = true;
             listView2.OwnerDraw = true;
-            listView1.DrawSubItem += ListView_DrawSubItem;
-            listView1.DrawColumnHeader += ListView_DrawColumnHeader;
-            listView2.DrawSubItem += ListView_DrawSubItem;
-            listView2.DrawColumnHeader += ListView_DrawColumnHeader;
             listView1.BringToFront();
             label1.BringToFront();
             pictureBox1.BringToFront();
@@ -178,24 +175,17 @@ namespace WindowsFormsApplication1
 
         private void setDefaultColor()
         {
+            if (firstSetColor && 
+                (listViewItem.Items.Count > 0 && listViewItem.Items[0].SubItems[0].BackColor == Color.WhiteSmoke))
+                return;
+            Color[] back = { Color.WhiteSmoke, Color.Gainsboro };
             for (int i = 0; i < listViewItem.Items.Count; ++i)
             {
-                if (i % 2 == 0)
-                {
-                    listViewItem.Items[i].BackColor = Color.WhiteSmoke;
-                    for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
-                        listViewItem.Items[i].SubItems[j].BackColor = Color.WhiteSmoke;
-                }
-                else
-                {
-                    listViewItem.Items[i].BackColor = Color.Gainsboro;
-                    for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
-                        listViewItem.Items[i].SubItems[j].BackColor = Color.Gainsboro;
-                }
-                listViewItem.Items[i].ForeColor = Color.Black;
+                Color c = back[i & 1];
                 for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
-                    listViewItem.Items[i].SubItems[j].ForeColor = Color.Black;
+                    listViewItem.Items[i].SubItems[j].BackColor = c;
             }
+            firstSetColor = true;
         }
 
         private void setLastFocus()
@@ -772,6 +762,7 @@ if ""%i"" NEQ """" (
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
+            firstSetColor = false;
             ListViewItemComparer sorter = VideoR.Checked ? sorter2 : sorter1;
             if (sorter.SortOrder == SortOrder.Ascending)
                 sorter.SortOrder = SortOrder.Descending;
