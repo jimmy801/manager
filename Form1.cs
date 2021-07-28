@@ -1,4 +1,5 @@
-﻿using System;
+﻿using rm.Trie;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +35,9 @@ namespace WindowsFormsApplication1
         List<int> lastSelect;
         List<int> lastFSelect = new List<int>();
         List<int> lastVSelect = new List<int>();
+        ITrieMap<string> trieF = new TrieMap<string>();
+        ITrieMap<string> trieV = new TrieMap<string>();
+
         List<ListViewItem> aryF = new List<ListViewItem>();
         List<ListViewItem> aryV = new List<ListViewItem>();
         ListView listViewItem;
@@ -205,6 +209,7 @@ namespace WindowsFormsApplication1
         private void forFolder()
         {
             aryF.Clear();
+            trieF.Clear();
             Stopwatch sw = new Stopwatch();//Stopwatch類別在System.Diagnostics命名空間裡
             sw.Reset();
             sw = Stopwatch.StartNew();
@@ -233,7 +238,9 @@ for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A
                         if (t.Contains(f)) { b = true; break; }
                     if (!b)
                     {
-                        aryF.Add(new ListViewItem(new string[] { t.Substring(t.LastIndexOf("\\") + 1), loc }));
+                        string f = t.Substring(t.LastIndexOf("\\") + 1);
+                        aryF.Add(new ListViewItem(new string[] { f, loc }));
+                        trieF.Add(f, loc);
                     }
                 }
             }
@@ -386,7 +393,15 @@ if ""%i"" NEQ """" (
                 if (string.IsNullOrWhiteSpace(actress)) try { actress = tmpSerialNum.Substring(0, tmpSerialNum.IndexOf('.')); }
                     catch { }
                 if (tmpstr[tmpstr.Length - 1] != "Data")
-                    aryV.Add(new ListViewItem(new string[] { tmpstr[tmpstr.Length - 1], actress.Trim(), loc }));
+                {
+                    string file = tmpstr[tmpstr.Length - 1];
+                    aryV.Add(new ListViewItem(new string[] { file, actress.Trim(), loc }));
+                    int dot = file.LastIndexOf('.');
+                    string serial = file.Substring(0, dot > 0 ? dot : file.Length).Trim();
+                    trieV.Add(serial, loc + file);
+                    if(Regex.IsMatch(serial, @"^(\d+)"))
+                        trieV.Add(Regex.Replace(serial, @"^(\d+)", ""), loc + file);
+                }
             }
             sw.Stop();
             VtotalT = sw.ElapsedMilliseconds;
@@ -845,7 +860,20 @@ if ""%i"" NEQ """" (
                 str = str.TrimStart("1234567890".ToCharArray());
                 str = ToNarrow(str).Trim(new char[] { ' ', '\t', '\n' });
                 string found = str;
-                for (int i = 0; i < listViewItem.Items.Count; i++)
+
+                if (trieV.HasKey(str))
+                {
+                    fnd_sb.Append(trieV.ValueBy(str) + '\t');
+                    clr_sb.Append("1\t");
+                }
+                else
+                {
+                    fnd_sb.Append(str + '\t');
+                    clr_sb.Append("0\t");
+                }
+                tgt_sb.Append(s.Trim() + '\t');
+
+                /*for (int i = 0; i < listViewItem.Items.Count; i++)
                 {
                     for (int j = 0; j < listViewItem.Items[i].SubItems.Count; ++j)
                     {
@@ -870,7 +898,7 @@ if ""%i"" NEQ """" (
                 {
                     fnd_sb.Append(found + '\t');
                     clr_sb.Append("1\t");
-                }
+                }*/
             }
             /*for (int i = 1; i < listViewItem.Items.Count; i++)
             {
