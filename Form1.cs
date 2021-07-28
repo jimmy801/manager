@@ -179,7 +179,7 @@ namespace WindowsFormsApplication1
 
         private void setDefaultColor()
         {
-            if (firstSetColor && 
+            if (firstSetColor &&
                 (listViewItem.Items.Count > 0 && listViewItem.Items[0].SubItems[0].BackColor == Color.WhiteSmoke))
                 return;
             Color[] back = { Color.WhiteSmoke, Color.Gainsboro };
@@ -240,7 +240,7 @@ for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A
                     {
                         string f = t.Substring(t.LastIndexOf("\\") + 1);
                         aryF.Add(new ListViewItem(new string[] { f, loc }));
-                        trieF.Add(f, loc);
+                        trieF.Add(f, loc + f);
                     }
                 }
             }
@@ -399,7 +399,7 @@ if ""%i"" NEQ """" (
                     int dot = file.LastIndexOf('.');
                     string serial = file.Substring(0, dot > 0 ? dot : file.Length).Trim();
                     trieV.Add(serial, loc + file);
-                    if(Regex.IsMatch(serial, @"^(\d+)"))
+                    if (Regex.IsMatch(serial, @"^(\d+)"))
                         trieV.Add(Regex.Replace(serial, @"^(\d+)", ""), loc + file);
                 }
             }
@@ -850,6 +850,10 @@ if ""%i"" NEQ """" (
             StringBuilder tgt_sb = new StringBuilder();
             StringBuilder fnd_sb = new StringBuilder();
             StringBuilder clr_sb = new StringBuilder();
+            ITrieMap<string> trieMap = null;
+
+            if (VideoR.Checked) trieMap = trieV;
+            else trieMap = trieF;
 
             foreach (string s in value.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
@@ -861,9 +865,9 @@ if ""%i"" NEQ """" (
                 str = ToNarrow(str).Trim(new char[] { ' ', '\t', '\n' });
                 string found = str;
 
-                if (trieV.HasKey(str))
+                if (trieMap.HasKey(str))
                 {
-                    fnd_sb.Append(trieV.ValueBy(str) + '\t');
+                    fnd_sb.Append(trieMap.ValueBy(str) + '\t');
                     clr_sb.Append("1\t");
                 }
                 else
@@ -871,6 +875,7 @@ if ""%i"" NEQ """" (
                     fnd_sb.Append(str + '\t');
                     clr_sb.Append("0\t");
                 }
+
                 tgt_sb.Append(s.Trim() + '\t');
 
                 /*for (int i = 0; i < listViewItem.Items.Count; i++)

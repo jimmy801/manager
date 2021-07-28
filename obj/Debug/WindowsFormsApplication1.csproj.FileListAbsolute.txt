@@ -120,3 +120,4 @@ D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.csproj.CoreCompileInpu
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.csproj.CopyComplete
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.exe
 D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.pdb
+D:\Tools\batch\manager\obj\Debug\WindowsFormsApplication1.csprojAssemblyReference.cache

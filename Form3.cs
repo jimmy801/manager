@@ -20,15 +20,18 @@ namespace WindowsFormsApplication1
             InitializeComponent();
             string[] tgt_ary = tgt.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             string[] fnd_ary = fnd.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            List<Color> forecolors = new List<Color>();
             for (int i = 0; i < tgt_ary.Length; ++i)
             {
                 dataGridView1.Rows.Add(tgt_ary[i], fnd_ary[i]);
+                if (fnd_ary[i].ToLower().EndsWith(".mp4") || fnd_ary[i].IndexOf('.') < 0) forecolors.Add(Color.Black);
+                else forecolors.Add(Color.DarkOrchid);
             }
             string[] founds = found.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             Color[] color = { Color.WhiteSmoke, Color.Gainsboro };
             for (int i = 0; i < founds.Length; ++i)
             {
-                dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
+                dataGridView1.Rows[i].DefaultCellStyle.ForeColor = forecolors[i];
                 dataGridView1.Rows[i].DefaultCellStyle.BackColor = color[Convert.ToInt32(founds[i])];
             }
             dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Ascending);
@@ -68,7 +71,7 @@ namespace WindowsFormsApplication1
 
         private void openFile(string path)
         {
-            if (!File.Exists(path)){
+            if (!File.Exists(path) && !Directory.Exists(path)){
                 MessageBox.Show(String.Format("Can not open {0}", path), "Open error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
