@@ -24,7 +24,9 @@ namespace WindowsFormsApplication1
             for (int i = 0; i < tgt_ary.Length; ++i)
             {
                 dataGridView1.Rows.Add(tgt_ary[i], fnd_ary[i]);
-                if (fnd_ary[i].ToLower().EndsWith(".mp4") || fnd_ary[i].IndexOf('.') < 0) forecolors.Add(Color.Black);
+                if (fnd_ary[i].IndexOf('.') < 0
+                    || Path.GetFileName(fnd_ary[i].ToLower()) == Path.GetFileName(tgt_ary[i].ToLower()))
+                    forecolors.Add(Color.Black);
                 else forecolors.Add(Color.DarkOrchid);
             }
             string[] founds = found.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
