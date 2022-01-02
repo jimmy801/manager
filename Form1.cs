@@ -944,16 +944,18 @@ if ""%i"" NEQ """" (
             int count = 0;
             for (int i = 1; i < listViewItem.Items.Count; i++)
             {
-                f1 = listViewItem.Items[i].Text.Substring(0, listViewItem.Items[i].Text.LastIndexOf('.'));
-                p1 = listViewItem.Items[i].SubItems[2].Text + listViewItem.Items[i].SubItems[0].Text + '\t';
+                ListViewItem item = listViewItem.Items[i];
+                f1 = item.Text.Substring(0, item.Text.LastIndexOf('.'));
+                p1 = item.SubItems[item.SubItems.Count - 1].Text + item.SubItems[0].Text + '\t';
                 if (complete.Contains(p1))
                     continue;
                 for (int j = 0; j < i; ++j)
                 {
-                    f2 = listViewItem.Items[j].Text.Substring(0, listViewItem.Items[j].Text.LastIndexOf('.'));
+                    ListViewItem item2 = listViewItem.Items[j];
+                    f2 = item2.Text.Substring(0, item2.Text.LastIndexOf('.'));
                     if (f1.Contains(f2) || f2.Contains(f1))
                     {
-                        p2 = listViewItem.Items[j].SubItems[2].Text + listViewItem.Items[j].SubItems[0].Text + '\t';
+                        p2 = item2.SubItems[item2.SubItems.Count - 1].Text + item2.SubItems[0].Text + '\t';
                         if (add)
                         {
                             sb.Append(p2);
@@ -994,13 +996,17 @@ if ""%i"" NEQ """" (
             for (int i = 1; i < listViewItem.Items.Count; i++)
             {
                 pos = pos < 0 ? i - 1 : pos;
-                f1 = listViewItem.Items[pos].Text.Substring(0, listViewItem.Items[pos].Text.LastIndexOf('.'));
-                f2 = listViewItem.Items[i].Text.Substring(0, listViewItem.Items[i].Text.LastIndexOf('.'));
+                f1 = VideoR.Checked ? listViewItem.Items[pos].Text.Substring(0, listViewItem.Items[pos].Text.LastIndexOf('.')) : listViewItem.Items[pos].Text;
+                f2 = VideoR.Checked ? listViewItem.Items[i].Text.Substring(0, listViewItem.Items[i].Text.LastIndexOf('.')) : listViewItem.Items[i].Text;
                 if ((f1.Contains(f2) || f2.Contains(f1)) && f1 != (f2 + 'C') && f2 != (f1 + 'C'))
                 {
+                    ListViewItem item = listViewItem.Items[i];
                     if (pos == i - 1)
-                        sb.Append(listViewItem.Items[pos].SubItems[2].Text + listViewItem.Items[pos].SubItems[0].Text + '\t');
-                    sb.Append(listViewItem.Items[i].SubItems[2].Text + listViewItem.Items[i].SubItems[0].Text + '\t');
+                    {
+                        ListViewItem item_p = listViewItem.Items[pos];
+                        sb.Append(item_p.SubItems[item_p.SubItems.Count - 1].Text + item_p.SubItems[0].Text + '\t');
+                    }
+                    sb.Append(item.SubItems[item.SubItems.Count - 1].Text + item.SubItems[0].Text + '\t');
                     if (add) count++;
                     else count += 2;
                     add = true;
@@ -1022,7 +1028,7 @@ if ""%i"" NEQ """" (
         {
             if (Control.ModifierKeys == Keys.Shift) search(-1);
             else search(1);
-            if (string.IsNullOrWhiteSpace(searchText.Text) && VideoR.Checked)
+            if (string.IsNullOrWhiteSpace(searchText.Text))
             {
                 if (Control.ModifierKeys == Keys.Control) findDeepDuplicate();
                 else findDuplicate();
