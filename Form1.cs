@@ -286,6 +286,7 @@ for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A
         private void forVideo()
         {
             aryV.Clear();
+            trieV.Clear();
             Stopwatch sw = new Stopwatch();//Stopwatch類別在System.Diagnostics命名空間裡
             sw.Reset();
             sw = Stopwatch.StartNew();
