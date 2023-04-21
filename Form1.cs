@@ -23,7 +23,8 @@ namespace WindowsFormsApplication1
         ListViewItemComparer sorter2 = new ListViewItemComparer();
         string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         //string diskNames = "TOSHIBA_white ADATA_TC TOSHIBAEXT TOSHIBAEXT ADATA_blue Seagate_4T_red My_Passport Transcend_blk TOSHIBA_blue Seagate_5T Seagate_8T_2 TOSHIBA_4T_BLK ADATA_4T WD_4T_blk ADATA_4T_DB TOSHIBAl_4T_blk Seagate_8T_1 My_Book";
-        string diskUUID = "2C09-1B0E E27B-DFE5 2C4E-6CA7 5225-CD70 0C5C-0819 C870-5B24 76C5-8D86 B0A2-4A76 2E59-1FAD 9A8D-D6C1 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0 1A5A-E56E A464-4794 FC4A-E051 F765-E051";
+        //string diskUUID = "2C09-1B0E E27B-DFE5 2C4E-6CA7 5225-CD70 0C5C-0819 C870-5B24 76C5-8D86 B0A2-4A76 2E59-1FAD 9A8D-D6C1 A41A-385D 48C0-9292 BEEB-03E6 B81B-45DD 4E97-3281 2675-36D0 1A5A-E56E A464-4794 FC4A-E051";
+        string diskUUID = "F765-E051";
         bool over = false;
         bool getDataexc = false;
         bool lastIsFolder = true;
@@ -140,14 +141,16 @@ namespace WindowsFormsApplication1
                 p.StandardInput.WriteLine("@echo off");
                 p.StandardInput.WriteLine(commandText);
                 p.StandardInput.WriteLine("exit");
-                p.WaitForExit();
+                /*p.WaitForExit();
                 p.Close();
                 if(!File.Exists(filename))
                 {
                     return "";
                 }
-                //strOutput = p.StandardOutput.ReadToEnd();//匯出整個執行過程
-                strOutput = File.ReadAllText(filename, Encoding.UTF8);
+                strOutput = File.ReadAllText(filename, Encoding.UTF8);*/
+                strOutput = p.StandardOutput.ReadToEnd();//匯出整個執行過程
+                p.WaitForExit();
+                p.Close();
                 string lastStr = "More? )\r\n";
                 int start = strOutput.LastIndexOf(lastStr);
                 start = start >= 0? (start+ lastStr.Length) : 0;
@@ -157,6 +160,7 @@ namespace WindowsFormsApplication1
             }
             catch
             {
+                p.Close();
                 strOutput = "";
                 //strOutput = e.Message;
             }
@@ -223,7 +227,7 @@ namespace WindowsFormsApplication1
             string[] filter = { ".", "..", "白馬下載器", "新增資料夾", "Sp Service", "System" };
             string tmpFile = "tmpFolder.txt";
             //string[] tmp = File.ReadAllLines(desktop + @"\o");
-            if (File.Exists(tmpFile))
+/*            if (File.Exists(tmpFile))
             {
                 File.Delete(tmpFile);
             }
@@ -240,7 +244,18 @@ for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A >> ""{1}""
 )
 )
 )
-)", diskUUID, tmpFile), tmpFile).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+)", diskUUID, tmpFile), tmpFile).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);*/
+            string[] tmp = CommandOutput(String.Format(@"
+for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
+if exist %p:\Data ( 
+for /f %i in ('vol %p: ^| findstr ""{0}""') do (
+if ""%i"" NEQ """" (
+for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A
+)
+)
+)
+)", diskUUID), tmpFile).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
             FcmdT = sw.ElapsedMilliseconds;
             string loc = "";
             bool b;
@@ -319,7 +334,7 @@ for /F ""tokens=*"" %A in ('dir /ad/b %p:\Data') do @echo %p:\Data\%A >> ""{1}""
             string cmd = main_cmd + separate_pre + string.Join(separate_pre, videoTypes) + ignoreUnfind;
             string tmpFile = "tmpVedio.txt";
             //string[] tmp = File.ReadAllLines(desktop + @"\o");
-            if (File.Exists(tmpFile))
+/*            if (File.Exists(tmpFile))
             {
                 File.Delete(tmpFile);
             }
@@ -336,7 +351,18 @@ if ""%i"" NEQ """" (
 )
 )
 )
-)", diskUUID, cmd, tmpFile), tmpFile).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+)", diskUUID, cmd, tmpFile), tmpFile).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);*/
+            string[] tmp = CommandOutput(String.Format(@"
+for %p in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do ( 
+if exist %p:\Data\ (
+for /f %i in ('vol %p: ^| findstr ""{0}""') do ( 
+if ""%i"" NEQ """" ( 
+{1}
+)
+)
+)
+)", diskUUID, cmd), tmpFile).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
             VcmdT = sw.ElapsedMilliseconds;
             string[] tmpstr;
             string actress = "";
